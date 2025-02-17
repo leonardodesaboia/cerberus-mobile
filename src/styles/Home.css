@@ -1,0 +1,83 @@
+
+.custom-toolbar {
+  --background: var(--primary-color);
+  --min-height: 60px;
+  padding: 5rem 15px;
+  border-radius: 0 0 25px 25px;
+}
+
+.custom-saldo{
+  color: white
+}
+
+.cust
+
+/* Estilos do Swiper */
+.custom-swiper {
+    height: 100%;
+    width: 100%;
+    --swiper-pagination-bullet-active-color: var(--ion-color-primary);
+  }
+  
+  /* Estilos do Card */
+  .custom-card {
+    margin: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+  
+  .custom-card ion-card-header {
+    padding: 15px;
+  }
+  
+  .custom-card ion-card-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+  
+  .custom-card ion-card-subtitle {
+    font-size: 1.1em;
+    color: var(--ion-color-medium);
+  }
+  
+  .custom-card ion-card-content {
+    padding: 0 15px 15px;
+    font-size: 1em;
+    line-height: 1.4;
+    color: var(--ion-color-medium-shade);
+  }
+  
+  /* Media Queries para responsividade */
+  @media screen and (min-width: 768px) {
+    .swiper-container {
+      --swiper-slides-per-view: 2;
+      --swiper-space-between: 20px;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) {
+    .swiper-container {
+      --swiper-slides-per-view: 3;
+      --swiper-space-between: 30px;
+    }
+  }
+  
+  /* Estilos da paginação do Swiper */
+  .swiper-pagination-bullet {
+    background: var(--ion-color-medium);
+    opacity: 0.5;
+  }
+  
+  .swiper-pagination-bullet-active {
+    background: var(--ion-color-primary);
+    opacity: 1;
+  }

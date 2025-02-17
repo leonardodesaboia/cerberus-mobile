@@ -1,0 +1,99 @@
+.store-header {
+    border-radius: 0 0 30px 30px;
+  }
+  
+  .store-header ion-toolbar {
+    --background: transparent;
+    --border-style: none;
+    padding: 10px;
+  }
+
+  .custom-title {
+    color: white;
+    margin: 1.5rem 0 0.8rem 0;
+  }
+  
+  .points-display {
+    padding: 10px 15px;
+  }
+  
+  .points-display ion-label {
+    display: block;
+    color: white;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .points-display h2 {
+    color: white;
+    font-size: 28px;
+    margin: 0;
+    font-weight: bold;
+  }
+  
+  .store-content {
+    padding: 20px;
+  }
+  
+  .products-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .points-section {
+    margin-bottom: 30px;
+  }
+  
+  .points-section h3 {
+    font-size: 16px;
+    color: var(--ion-color-dark);
+    margin-bottom: 15px;
+  }
+  
+  .products-swiper {
+    width: 100%;
+  }
+  
+  .product-card {
+    margin: 0;
+    height: 80px;
+    --background: #f5f5f5;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: none;
+  }
+  
+  .product-image {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    padding: 10px;
+  }
+  
+  /* Customização do Swiper */
+  .swiper-pagination {
+    bottom: -5px !important;
+  }
+  
+  .swiper-pagination-bullet {
+    background: var(--ion-color-success);
+    opacity: 0.5;
+  }
+  
+  .swiper-pagination-bullet-active {
+    background: var(--ion-color-success);
+    opacity: 1;
+  }
+  
+  /* Ajustes para o IonHeader */
+  ion-header.header-collapse-condense ion-toolbar {
+    --background: var(--ion-primary-color);
+  }
+  
+  /* Remove bordas padrão do IonCard */
+  ion-card {
+    margin: 0;
+    box-shadow: none;
+  }

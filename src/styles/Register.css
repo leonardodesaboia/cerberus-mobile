@@ -1,0 +1,188 @@
+.register-container {
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .register-header {
+    background-color: var(--primary-color);
+    padding: 16px;
+    margin-bottom: 0;
+    width: 100%;
+    text-align: center;
+    border-radius: 0 0 24px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .register-header h1 {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .form-container-register {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0 0 16px 16px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .input-label {
+    color: #333;
+    font-size: 0.875rem;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--light-color);
+    font-size: 0.875rem;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: var(--tertiary-color);
+    box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
+  }
+  
+  .forgot-password {
+    text-align: left;
+  }
+  
+  .forgot-password a, 
+  .create-account a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+  
+  .forgot-password a:hover, 
+  .create-account a:hover {
+    text-decoration: underline;
+  }
+  
+  .register-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-button:hover {
+    background-color: var(--tertiary-color);
+  }
+  
+  .wave-container-register {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 0;
+  }
+  
+  .wave-register {
+    width: 100%;
+    max-height: 250px;
+  }
+  
+  .input-error {
+    border-color: #dc3545;
+    background-color: #fff;
+  }
+  
+  .input-error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+  }
+  
+  .input-error {
+    border-color: #dc3545;
+    background-color: #fff;
+  }
+  
+  .input-error:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-top: 4px;
+  }
+  
+  @media (min-width: 768px) {
+    .register-container {
+      justify-content: center;
+      min-height: 100vh;
+    }
+  
+    .register-header {
+      max-width: 450px;
+      border-radius: 24px 24px 0 0;
+    }
+  
+    .form-container-register {
+      max-width: 450px;
+      padding: 24px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+  
+    .input-field {
+      padding: 14px;
+      font-size: 1rem;
+    }
+  
+    .register-button {
+      padding: 14px;
+      font-size: 1rem;
+    }
+  
+    .wave-register {
+      position: absolute;
+      bottom: 0;
+      max-height: 100px;
+      width: 100%;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .register-header,
+    .form-container-register {
+      max-width: 500px;
+    }
+  
+    .register-header h1 {
+      font-size: 2.5rem;
+    }
+  }

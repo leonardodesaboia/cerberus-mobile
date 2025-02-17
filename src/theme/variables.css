@@ -1,2 +1,50 @@
-/* For information on how to create your own theme, please see:
-http://ionicframework.com/docs/theming/ */
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+:root {
+  --ion-primary-color:#174204 ;
+  --ion-secondary-color: #86C26D;
+  --ion-tertiary-color:#326D19 ;
+  --ion-danger-color:#9A1200 ; 
+  --ion-success-color:#118B01 ;
+  --ion-light-color:#F1F1F1 ;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-label {
+  color: #333;
+  font-size: 0.875rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: var(--light-color);
+  font-size: 1rem;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--tertiary-color);
+  box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
+}
+
+@media (min-width: 768px) {
+  .input-field {
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+}
