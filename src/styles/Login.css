@@ -9,7 +9,7 @@
   
   /* Header */
   .login-header {
-    background-color: var(--primary-color);
+    background-color: var(--ion-primary-color);
     padding: 24px;
     margin-bottom: 32px;
     width: 100%;
@@ -50,7 +50,7 @@
   
   .forgot-password a, 
   .create-account-login a {
-    color: var(--primary-color);
+    color: var(--ion-primary-color);
     text-decoration: none;
     font-size: 0.875rem;
   }
@@ -64,7 +64,7 @@
   .login-button {
     width: 100%;
     padding: 16px;
-    background-color: var(--primary-color);
+    background-color: var(--ion-primary-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -75,7 +75,7 @@
   }
   
   .login-button:hover {
-    background-color: var(--tertiary-color);
+    background-color: var(--ion-tertiary-color);
   }
   
   /* Container do Wave */

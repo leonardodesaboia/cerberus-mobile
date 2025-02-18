@@ -1,4 +1,3 @@
-// Input.tsx
 import { ChangeEvent, InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {

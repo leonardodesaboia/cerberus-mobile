@@ -9,7 +9,7 @@
   }
   
   .register-header {
-    background-color: var(--primary-color);
+    background-color: var(--ion-primary-color);
     padding: 16px;
     margin-bottom: 0;
     width: 100%;
@@ -59,13 +59,13 @@
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: var(--light-color);
+    background-color: var(--ion-light-color);
     font-size: 0.875rem;
   }
   
   .input-field:focus {
     outline: none;
-    border-color: var(--tertiary-color);
+    border-color: var(--ion-tertiary-color);
     box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
   }
   
@@ -75,7 +75,7 @@
   
   .forgot-password a, 
   .create-account a {
-    color: var(--primary-color);
+    color: var(--ion-primary-color);
     text-decoration: none;
     font-size: 0.875rem;
   }
@@ -88,18 +88,18 @@
   .register-button {
     width: 100%;
     padding: 12px;
-    background-color: var(--primary-color);
+    background-color: var(--ion-primary-color);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
   .register-button:hover {
-    background-color: var(--tertiary-color);
+    background-color: var(--ion-tertiary-color);
   }
   
   .wave-container-register {

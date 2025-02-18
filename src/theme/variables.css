@@ -48,3 +48,47 @@
     font-size: 1.1rem;
   }
 }
+
+.store-header {
+  border-radius: 0 0 30px 30px;
+}
+
+.store-header ion-toolbar {
+  --background: transparent;
+  --border-style: none;
+  padding: 10px;
+}
+
+.custom-title {
+  color: white;
+  margin: 1.5rem 0 0.8rem 0;
+}
+
+.points-display {
+  padding: 10px 15px;
+}
+
+.points-display ion-label {
+  display: block;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.points-display h2 {
+  color: white;
+  font-size: 28px;
+  margin: 0;
+  font-weight: bold;
+}
+
+  /* Ajustes para o IonHeader */
+  ion-header.header-collapse-condense ion-toolbar {
+    --background: var(--ion-primary-color);
+  }
+  
+  /* Remove bordas padrão do IonCard */
+  ion-card {
+    margin: 0;
+    box-shadow: none;
+  }

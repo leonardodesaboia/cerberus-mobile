@@ -258,7 +258,7 @@ const Register: React.FC = () => {
                     confirmPassword: ''
                 });
 
-                window.location.href = '/';
+                window.location.href = '/home';
                 
             } catch (error: any) {
                 setFormSubmitted(false);
