@@ -43,32 +43,6 @@
     gap: 16px;
   }
   
-  .input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .input-label {
-    color: #333;
-    font-size: 0.875rem;
-  }
-  
-  .input-field {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: var(--ion-light-color);
-    font-size: 0.875rem;
-  }
-  
-  .input-field:focus {
-    outline: none;
-    border-color: var(--ion-tertiary-color);
-    box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
-  }
-  
   .forgot-password {
     text-align: left;
   }

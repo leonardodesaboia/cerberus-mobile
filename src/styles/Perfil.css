@@ -1,0 +1,70 @@
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.avatar-container {
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 8vh;
+    height: 8vh;
+    border: 3px solid #ccc;
+}
+
+.profile-form {
+    width: 90%;
+    margin-left: 1rem;
+    max-width: 400px;
+}
+
+.info-section {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+.save, .cancel, .logout, .delete-account {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.save-button, .cancel-button{
+    width: 100%;
+    max-width: 200px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 8px;
+}
+
+.cancel-button {
+    background-color: #ccc;
+    color: #333;
+}
+
+.input-field:focus{
+    border-color: var(--ion-primary-color);
+}
+
+/* .logout-button {
+    background-color: #ff9800;
+}
+
+.delete-button {
+    width: 100%;
+    max-width: 200px;
+    background-color: #d32f2f;
+    color: white;
+    border-radius: 8px;
+} */

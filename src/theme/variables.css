@@ -38,7 +38,7 @@
 
 .input-field:focus {
   outline: none;
-  border-color: var(--tertiary-color);
+  border-color: var(--ion-tertiary-color);
   box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
 }
 
