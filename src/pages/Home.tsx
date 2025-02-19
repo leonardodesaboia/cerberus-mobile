@@ -9,6 +9,7 @@ import '../styles/Home.css';
 import Toolbar from '../components/Toolbar';
 import Header from '../components/Header'
 import SwiperComponent from '../components/SwiperHome';
+import TrashChart from '../components/Chart';
 
 const Home: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const Home: React.FC = () => {
             <h2 className='achievements-title'>Conquistas bloqueadas</h2>
           </IonText>
           <SwiperComponent />
+          <TrashChart />
       </IonContent>
       <Toolbar />
     </IonPage>

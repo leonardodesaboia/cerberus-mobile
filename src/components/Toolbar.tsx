@@ -13,7 +13,7 @@ const Toolbar: React.FC = () => {
           </IonTabButton>
           <IonTabButton tab="config" href="/config">
             <ion-icon name="person"></ion-icon>
-            <IonLabel>Configurações</IonLabel>
+            <IonLabel>Perfil</IonLabel>
           </IonTabButton>
         </IonTabBar>
   )

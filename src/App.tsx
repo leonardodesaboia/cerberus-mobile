@@ -13,7 +13,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { ellipse, square, triangle } from 'ionicons/icons';
 import Home from './pages/Home';
 import Store from './pages/Store';
-import Config from './pages/Config';
+import Config from './pages/Perfil';
 import Login from './pages/Login'
 import Register from './pages/Register'
 

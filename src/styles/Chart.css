@@ -1,0 +1,129 @@
+.waste-stats-section {
+    margin: 3rem 1rem;  /* Reduced side margins for mobile */
+    padding: 1.5rem;    /* Slightly reduced padding for mobile */
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.chart-container {
+    margin-top: 2rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;  /* Allow items to wrap on smaller screens */
+}
+
+.legend-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    min-width: 200px;  /* Ensure legend has enough width */
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;  /* Prevent the color circle from shrinking */
+}
+
+.legend-item.total {
+    font-weight: bold;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-width: 768px) {
+    .waste-stats-section {
+        margin: 2rem 0.5rem;
+        padding: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+    }
+
+    .chart-container {
+        flex-direction: column;
+        padding: 0.5rem;
+        gap: 15px;
+    }
+
+    /* Make the chart container take full width on mobile */
+    .chart-container > div:first-child {
+        width: 100% !important;
+        height: 250px !important;
+    }
+
+    .legend-container {
+        width: 100%;
+        padding: 1rem;
+        font-size: 14px;
+        gap: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .waste-stats-section {
+        margin: 1rem 0.25rem;
+    }
+
+    .chart-container > div:first-child {
+        height: 200px !important;
+    }
+
+    .legend-container {
+        font-size: 13px;
+    }
+
+    .legend-color {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Fix for Safari flexbox gap support */
+@supports not (gap: 20px) {
+    .chart-container > * {
+        margin: 10px;
+    }
+    
+    .legend-container > * {
+        margin-bottom: 10px;
+    }
+}
+
+/* Print styles for better readability when printed */
+@media print {
+    .waste-stats-section {
+        margin: 1cm;
+        padding: 1cm;
+        box-shadow: none;
+    }
+
+    .chart-container {
+        box-shadow: none;
+        break-inside: avoid;
+    }
+}
