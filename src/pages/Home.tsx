@@ -1,7 +1,4 @@
 import { IonContent, IonHeader, IonLabel, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
@@ -10,12 +7,34 @@ import Toolbar from '../components/Toolbar';
 import Header from '../components/Header'
 import SwiperComponent from '../components/SwiperHome';
 import TrashChart from '../components/Chart';
+import { useEffect, useState } from 'react';
+import { getUserData } from '../services/api';
 
 const Home: React.FC = () => {
+  const [userPoints, setUserPoints] = useState<number>(0);
+  const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+
+      useEffect(() => {
+          const fetchUserData = async () => {
+              try {
+                  const userData = await getUserData();
+                  setUserPoints(userData.points);
+              } catch (err) {
+                  setError('Erro ao carregar dados do usuário');
+                  console.error('Erro ao carregar dados do usuário:', err);
+              }
+          };
+  
+          fetchUserData();
+      }, []);
+
+  
   return (
         <IonPage>
           <IonContent fullscreen>
-          <Header/>
+          <Header points={userPoints} shouldRefresh={shouldRefreshHeader}/>
           <IonText className="title-text">
             <h2 className='achievements-title'>Conquistas desbloqueadas</h2>
           </IonText>

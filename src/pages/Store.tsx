@@ -1,13 +1,13 @@
 import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import '../styles/Store.css';
 import Toolbar from '../components/Toolbar';
 import Header from '../components/Header';
-import { updateUserPoints, products } from '../services/api';
+import { updateUserPoints, products, getUserData } from '../services/api';
 
 interface Product {
     _id: string;
@@ -29,12 +29,24 @@ const Store: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [userPoints, setUserPoints] = useState<number>(0);
+    const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
 
-    // Callback para atualizar os pontos
-    const handlePointsUpdate = useCallback((points: number) => {
-        setUserPoints(points);
+    // Carregar dados do usuário
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await getUserData();
+                setUserPoints(userData.points);
+            } catch (err) {
+                setError('Erro ao carregar dados do usuário');
+                console.error('Erro ao carregar dados do usuário:', err);
+            }
+        };
+
+        fetchUserData();
     }, []);
 
+    // Carregar produtos
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -59,6 +71,7 @@ const Store: React.FC = () => {
                 setProductSections(sections.filter(section => section.products.length > 0));
             } catch (err) {
                 setError('Erro ao carregar produtos');
+                console.error('Erro ao carregar produtos:', err);
             } finally {
                 setLoading(false);
             }
@@ -88,12 +101,14 @@ const Store: React.FC = () => {
 
         try {
             await updateUserPoints(newPoints);
-            setUserPoints(newPoints); // Atualiza os pontos localmente
+            setUserPoints(newPoints);
+            setShouldRefreshHeader(prev => !prev); // Força atualização do Header
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
         } catch (err) {
             setError('Erro ao processar a troca');
+            console.error('Erro ao processar a troca:', err);
         }
     };
 
@@ -112,7 +127,7 @@ const Store: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <Header onPointsUpdate={handlePointsUpdate} />
+                <Header points={userPoints} shouldRefresh={shouldRefreshHeader} />
 
                 <div className="store-content">
                     <IonText className="title-text">
