@@ -3,7 +3,7 @@ import { close } from 'ionicons/icons';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
-import '../styles/Config.css';
+import '../styles/Perfil.css';
 
 interface FormData {
     username: string;

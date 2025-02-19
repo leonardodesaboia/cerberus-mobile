@@ -109,7 +109,7 @@ const Login: React.FC = () => {
                 }
 
                 // Redireciona para home
-                window.location.href = '/';
+                window.location.href = '/home';
                 
             } catch (error: any) {
                 if (error.message.includes('credenciais')) {

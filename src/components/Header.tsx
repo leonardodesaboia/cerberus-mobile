@@ -45,25 +45,6 @@ const Header: React.FC = () => {
         fetchUserData();
     }, []);
 
-    const handlePoints = async () => {
-        if (!selectedProduct) return;
-
-        const newPoints = points - selectedProduct.price;
-
-        if (newPoints < 0) {
-            console.log("Pontos insuficientes para esta troca.");
-            return;
-        }
-
-        try {
-            await updateUserPoints(newPoints);
-            setPoints(newPoints);
-            console.log("Troca realizada com sucesso!");
-        } catch (error) {
-            console.error("Erro ao atualizar pontos:", error);
-        }
-    };
-
     if (loading) {
         return (
             <IonHeader>
