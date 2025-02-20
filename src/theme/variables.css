@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
+IonToolbar{
+  --padding-top: 0 !important;;
+}
+
 :root {
   --ion-primary-color:#174204 ;
   --ion-secondary-color: #86C26D;
@@ -10,10 +14,26 @@
 }
 
 * {
-  margin: 0;
+  margin-top: -1px ;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Lato', sans-serif;
+}
+
+.active-tab {
+  color: var(--ion-primary-color); 
+}
+
+.active-tab ion-icon {
+  color: var(--ion-primary-color);
+}
+
+.active-tab ion-label {
+  color: var(--ion-primary-color);
+}
+
+ion-tab-button {
+  color: #666; 
 }
 
 .input-container {
@@ -56,16 +76,16 @@
 .store-header ion-toolbar {
   --background: transparent;
   --border-style: none;
-  padding: 10px;
+  padding: 10px 0 10px 0;
 }
 
 .custom-title {
   color: white;
-  margin: 1.5rem 0 0.8rem 0;
+  margin: 1.5rem 0 0.8rem 1rem;
 }
 
 .points-display {
-  padding: 10px 15px;
+  margin-left: 1rem ;
 }
 
 .points-display ion-label {

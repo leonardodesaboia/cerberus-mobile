@@ -1,6 +1,6 @@
-import { useState, FormEvent, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import Input from '../components/Input';
-import { loginUser } from '../services/api';
+import { loginUser, getUserData } from '../services/api';
 import '../styles/Login.css';
 
 interface FormData {
@@ -18,14 +18,9 @@ interface TouchedFields {
     password: boolean;
 }
 
-interface LoginResponse {
-    token: string;
-    user?: {
-        id?: string;
-        name?: string;
-        email?: string;
-        [key: string]: any;
-    };
+interface Validators {
+    email: (value: string) => string;
+    password: (value: string) => string;
 }
 
 const Login: React.FC = () => {
@@ -48,7 +43,7 @@ const Login: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [apiError, setApiError] = useState<string>('');
 
-    const validators = {
+    const validators: Validators = {
         email: (value: string): string => {
             if (!value) return 'Email é obrigatório';
             value = value.trim();
@@ -62,7 +57,7 @@ const Login: React.FC = () => {
         }
     };
 
-    const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setFormData(prev => ({ ...prev, [field]: value }));
         
@@ -78,7 +73,7 @@ const Login: React.FC = () => {
         setErrors(prev => ({ ...prev, [field]: validationError }));
     };
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         setApiError('');
 
@@ -98,17 +93,17 @@ const Login: React.FC = () => {
         if (!hasErrors) {
             setIsLoading(true);
             try {
-                const data = await loginUser(formData) as LoginResponse;
-                
-                // Salva o token
-                localStorage.setItem('token', data.token);
-                
-                // Opcional: salvar dados do usuário
-                if (data.user) {
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                }
+                const data = await loginUser(formData);
 
-                // Redireciona para home
+                const token = data.token;
+                const arrayToken = data.token.split('.');
+                const tokenPayload = JSON.parse(atob(arrayToken[1]));
+                localStorage.setItem('token', token);
+                localStorage.setItem('userId', tokenPayload.id);
+                
+                const userData = await getUserData();
+                localStorage.setItem('user', JSON.stringify(userData));
+                
                 window.location.href = '/home';
                 
             } catch (error: any) {
@@ -172,10 +167,6 @@ const Login: React.FC = () => {
                         <a href="/register">Crie sua conta aqui</a>
                     </div>
                 </form>
-            </div>
-
-            <div className="wave-container-login">
-                <img src='/Vector.png' alt='Bottom img' className='wave-login'/>
             </div>
         </div>
     );

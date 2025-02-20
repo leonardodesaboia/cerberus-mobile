@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ points, shouldRefresh }) => {
         };
 
         fetchUserData();
-    }, [shouldRefresh]); // Atualiza quando shouldRefresh mudar
+    }, [shouldRefresh]);
 
     if (loading) {
         return (
@@ -51,10 +51,10 @@ const Header: React.FC<HeaderProps> = ({ points, shouldRefresh }) => {
     }
 
     return (
-        <IonHeader className="store-header" collapse="condense">
-            <IonToolbar className="custom-toolbar">
+        <IonHeader className="store-header" collapse="condense" style={{ padding: "0 !important"}}>
+            <IonToolbar className="custom-toolbar" style={{ padding: "0 !important"}}>
                 <IonTitle size="large" className="custom-title">
-                    Bem vindo, {username}!
+                    Bem vindo(a) {username}!
                 </IonTitle>
                 <div className="points-display">
                     <IonLabel>Seu saldo de pontos</IonLabel>

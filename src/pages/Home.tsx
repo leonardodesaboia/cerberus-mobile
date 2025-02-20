@@ -15,35 +15,33 @@ const Home: React.FC = () => {
   const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getUserData();
+        setUserPoints(userData.points);
+      } catch (err) {
+        setError('Erro ao carregar dados do usuário');
+        console.error('Erro ao carregar dados do usuário:', err);
+      }
+    };
 
-      useEffect(() => {
-          const fetchUserData = async () => {
-              try {
-                  const userData = await getUserData();
-                  setUserPoints(userData.points);
-              } catch (err) {
-                  setError('Erro ao carregar dados do usuário');
-                  console.error('Erro ao carregar dados do usuário:', err);
-              }
-          };
-  
-          fetchUserData();
-      }, []);
+    fetchUserData();
+  }, []);
 
-  
   return (
-        <IonPage>
-          <IonContent fullscreen>
-          <Header points={userPoints} shouldRefresh={shouldRefreshHeader}/>
-          <IonText className="title-text">
-            <h2 className='achievements-title'>Conquistas desbloqueadas</h2>
-          </IonText>
-        <SwiperComponent />
-        <IonText className="title-text">
-            <h2 className='achievements-title'>Conquistas bloqueadas</h2>
-          </IonText>
-          <SwiperComponent />
-          <TrashChart />
+    <IonPage>
+      <IonContent fullscreen>
+        <Header points={userPoints} shouldRefresh={shouldRefreshHeader}/>
+        <IonText className="title-text-home">
+          <h2 className='achievements-title-home'>Conquistas desbloqueadas</h2>
+        </IonText>
+        <SwiperComponent showUnlocked={true} />
+        <IonText className="title-text-home">
+          <h2 className='achievements-title-home'>Conquistas bloqueadas</h2>
+        </IonText>
+        <SwiperComponent showUnlocked={false} />
+        <TrashChart />
       </IonContent>
       <Toolbar />
     </IonPage>

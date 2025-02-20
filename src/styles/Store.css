@@ -1,23 +1,51 @@
   .store-content {
-    padding: 20px;
+    margin: 1.3rem;
   }
-  
-  .products-name {
-    font-size: 22px;
-    margin-bottom: 20px;
-  }
-  
-  .points-section {
-    margin-bottom: 30px;
+
+  .products-title {
+    margin-bottom: 2rem;
   }
   
   .points-section h3 {
-    font-size: 16px;
-    color: var(--ion-color-dark);
+    font-size: 18px;
     margin-bottom: 15px;
+    font-weight: 500;
+  }
+
+  .product-name{
+    font-weight: 500;
+    font-size: 16px;
   }
   
   .products-swiper {
     width: 100%;
   }
+
+  .product-card{
+    background-color: var(--ion-secondary-color);
+    padding: 1rem;
+  }
+
+  .products-swiper-store {
+    display: flex;
+    padding-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
   
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--ion-primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,50%);
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

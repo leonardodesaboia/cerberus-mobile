@@ -80,7 +80,7 @@ const TrashChart: React.FC = () => {
         <section className="waste-stats-section">
             <h2 className="section-title">Suas estatísticas:</h2>
             <div className="chart-container">
-                <ResponsiveContainer width="50%" height={300}>
+                <ResponsiveContainer height={250}>
                     <PieChart>
                         <Pie 
                             data={data} 

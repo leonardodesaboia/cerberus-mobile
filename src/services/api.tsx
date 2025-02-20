@@ -1,6 +1,39 @@
-export const API_URL = 'http://localhost:3000'; 
+// api.ts
+export const API_URL = 'http://localhost:3000';
 
-export const registerUser = async (userData: Object) => {
+interface UserRegistrationData {
+  email: string;
+  cpf: string;
+  username: string;
+  password: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface UserData {
+  _id: string;
+  email: string;
+  username: string;
+  points: number;
+  paperDiscarted: number;
+  plasticDiscarted: number;
+  metalDiscarted: number;
+  glassDiscarted: number;
+  organicDiscarted: number;
+}
+
+interface UpdateUserPointsData {
+  points: number;
+}
+
+interface ApiError {
+  message: string;
+}
+
+export const registerUser = async (userData: UserRegistrationData): Promise<UserData> => {
   try {
     const response = await fetch(`${API_URL}/user`, {
       method: 'POST',
@@ -22,41 +55,45 @@ export const registerUser = async (userData: Object) => {
   }
 };
 
-export const loginUser = async (userData: Object) => {
+export const loginUser = async (userData: LoginData): Promise<{ token: string }> => {
+  try {
     const response = await fetch(`${API_URL}/user/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-        throw new Error(data.message || 'Erro ao fazer login');
+      throw new Error(data.message || 'Erro ao fazer login');
     }
 
     return data;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Erro nas credenciais');
+  }
 };
 
-export const getUserData = async () => {
+export const getUserData = async (): Promise<UserData> => {
   try {
-    
-    const response = await fetch(`${API_URL}/user/67b36bb2f5f5a0d4dea71eb3`, {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+
+    const response = await fetch(`${API_URL}/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-    }); 
+    });
 
     const data = await response.json();
-    console.log(data)
-    console.log(data.paperDiscarted)
-    console.log(data.metalDiscarted)
-    console.log(data.username)
 
-    
     if (!response.ok) {
       throw new Error(data.message || 'Erro ao obter os dados do usuário');
     }
@@ -67,29 +104,50 @@ export const getUserData = async () => {
   }
 };
 
-export const updateUserPoints = async (newPoints: any) => {
-  const response = await fetch(`http://localhost:3000/user/67b36bb2f5f5a0d4dea71eb3`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ points: newPoints }),
-  });
+export const updateUserPoints = async (newPoints: number): Promise<UserData> => {
+  try {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
 
-  if (!response.ok) {
-    throw new Error('Erro ao atualizar pontos.');
+    const response = await fetch(`${API_URL}/user/${userId}`, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({ points: newPoints }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao atualizar pontos');
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Erro ao atualizar pontos');
   }
 };
 
-export const editUserData = async (updatedData: any) => {
+export const editUserData = async (updatedData: Partial<UserData>): Promise<UserData> => {
   try {
-   
-     const response = await fetch(`${API_URL}/user/67b36bb2f5f5a0d4dea71eb3`, {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+
+    const response = await fetch(`${API_URL}/user/${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify(updatedData),
     });
-    console.log(JSON.stringify(updatedData))
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -102,17 +160,29 @@ export const editUserData = async (updatedData: any) => {
   }
 };
 
-export const products = async (userData: string | Record<string, string> | URLSearchParams | string[][] | undefined) => {
+interface ProductQueryParams {
+  category?: string;
+  name?: string;
+  price?: number;
+  [key: string]: string | number | undefined;
+}
+
+export const products = async (params?: ProductQueryParams): Promise<any[]> => {
   try {
-    // Convertendo o objeto userData para query string
-    const queryString = new URLSearchParams(userData).toString();
-    
-    const response = await fetch(`${API_URL}/product?`, {
+    const queryString = params ? new URLSearchParams(
+      Object.entries(params)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)])
+    ).toString() : '';
+
+    const url = `${API_URL}/product${queryString ? `?${queryString}` : ''}`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
-      
     });
 
     const data = await response.json();

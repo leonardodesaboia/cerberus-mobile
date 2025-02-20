@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert } from '@ionic/react';
+import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { useState, useEffect } from 'react';
@@ -55,16 +55,16 @@ const Store: React.FC = () => {
 
                 const sections: Section[] = [
                     {
-                        title: 'Até 20 pontos',
-                        products: activeProducts.filter((p: Product) => p.price <= 20)
+                        title: 'Até 2000 pontos',
+                        products: activeProducts.filter((p: Product) => p.price <= 2000)
                     },
                     {
                         title: 'Até 40 pontos',
                         products: activeProducts.filter((p: Product) => p.price > 20 && p.price <= 40)
                     },
                     {
-                        title: 'Acima de 40 pontos',
-                        products: activeProducts.filter((p: Product) => p.price > 40)
+                        title: 'Acima de 2000 pontos',
+                        products: activeProducts.filter((p: Product) => p.price > 2000)
                     }
                 ];
 
@@ -83,6 +83,9 @@ const Store: React.FC = () => {
     const handleProductClick = (product: Product) => {
         if (userPoints < product.price) {
             setError('Pontos insuficientes para esta troca');
+            setTimeout(() => {
+                setError('');
+            },5000)
             return;
         }
         setSelectedProduct(product);
@@ -102,7 +105,7 @@ const Store: React.FC = () => {
         try {
             await updateUserPoints(newPoints);
             setUserPoints(newPoints);
-            setShouldRefreshHeader(prev => !prev); // Força atualização do Header
+            setShouldRefreshHeader(prev => !prev);
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
@@ -116,8 +119,8 @@ const Store: React.FC = () => {
         return (
             <IonPage>
                 <IonContent>
-                    <div className="loading-container">
-                        Carregando...
+                    <div className="loader">
+                        <div className="spinner"></div>
                     </div>
                 </IonContent>
             </IonPage>
@@ -148,8 +151,8 @@ const Store: React.FC = () => {
                             <Swiper
                                 modules={[Pagination]}
                                 spaceBetween={10}
-                                slidesPerView={4.3}
-                                className="products-swiper"
+                                slidesPerView={3.3}
+                                className="products-swiper-store"
                             >
                                 {section.products.map((product) => (
                                     <SwiperSlide key={product._id}>
@@ -157,14 +160,11 @@ const Store: React.FC = () => {
                                             className="product-card"
                                             onClick={() => handleProductClick(product)}
                                         >
-                                            <IonImg 
-                                                src={product.img}
-                                                alt={product.name}
-                                                className="product-image"
-                                            />
-                                            <IonLabel className="product-name">{product.name}</IonLabel>
-                                            <br/>
-                                            <IonLabel className="product-points">{product.price} pontos</IonLabel>
+                                            <img src={product.img} alt={product.name} className="product-image" />
+                                            <IonCardHeader>
+                                                <IonCardTitle className="product-name">{product.name}</IonCardTitle>
+                                                <IonCardSubtitle className="product-points">{product.price} pontos</IonCardSubtitle>
+                                            </IonCardHeader>
                                         </IonCard>
                                     </SwiperSlide>
                                 ))}

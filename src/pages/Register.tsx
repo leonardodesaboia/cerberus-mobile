@@ -1,5 +1,5 @@
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
-import { registerUser } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { registerUser, loginUser, getUserData } from '../services/api';
 import Input from '../components/Input';
 import '../styles/Register.css';
 
@@ -27,18 +27,15 @@ interface TouchedFields {
     confirmPassword: boolean;
 }
 
-type ValidatorFunction = (value: string, compareValue?: string) => string;
-
 interface Validators {
-    email: ValidatorFunction;
-    cpf: ValidatorFunction;
-    username: ValidatorFunction;
-    password: ValidatorFunction;
-    confirmPassword: ValidatorFunction;
+    email: (value: string) => string;
+    cpf: (value: string) => string;
+    username: (value: string) => string;
+    password: (value: string) => string;
+    confirmPassword: (value: string, password: string) => string;
 }
 
 const Register: React.FC = () => {
-
     const [formData, setFormData] = useState<FormData>({
         email: '',
         cpf: '',
@@ -69,50 +66,53 @@ const Register: React.FC = () => {
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [navigationError, setNavigationError] = useState<string>('');
 
+
     const validators: Validators = {
         email: (value: string): string => {
             if (!value) return 'Email é obrigatório';
-            
+        
             value = value.trim();
-            
+        
             const atCount = (value.match(/@/g) || []).length;
             if (atCount !== 1) return 'Email deve conter exatamente um @';
-            
+        
             const [localPart, domain] = value.split('@');
-            
+        
             if (!localPart || localPart.length < 3) return 'Parte local do email deve ter pelo menos 3 caracteres';
             if (localPart.length > 64) return 'Parte local do email não pode ter mais de 64 caracteres';
-            
+        
             const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
             if (!localPartRegex.test(localPart)) {
                 return 'Email deve começar e terminar com letra ou número';
             }
-            
+        
             if (!domain) return 'Domínio do email não pode estar vazio';
             if (domain.length > 255) return 'Domínio do email não pode ter mais de 255 caracteres';
             if (!domain.includes('.')) return 'Domínio deve conter pelo menos um ponto';
-            
+        
             const domainRegex = /^[a-zA-Z][-a-zA-Z.]*[a-zA-Z](\.[a-zA-Z]{2,})+$/;
             if (!domainRegex.test(domain)) {
                 return 'Domínio deve conter apenas letras, pontos e hífens';
             }
-            
+        
             if (value.includes('..') || value.includes('--') || value.includes('__')) {
                 return 'Email não pode conter sequências de caracteres especiais';
             }
-            
+        
             if (/^[._-]|[._-]$/.test(localPart)) {
                 return 'Email não pode começar ou terminar com caracteres especiais';
             }
-            
-            const suspiciousPatterns = [/[^a-zA-Z0-9]{3,}/];
-            
+        
+            const suspiciousPatterns = [
+                /[^a-zA-Z0-9]{3,}/
+            ];
+        
             for (const pattern of suspiciousPatterns) {
                 if (pattern.test(value)) {
                     return 'Formato de email inválido';
                 }
             }
-            
+        
             return '';
         },
 
@@ -125,7 +125,7 @@ const Register: React.FC = () => {
             if (/^(\d)\1{10}$/.test(cpfClean)) return 'CPF inválido';
             
             let sum = 0;
-            let remainder: number;
+            let remainder;
             
             for (let i = 1; i <= 9; i++) {
                 sum = sum + parseInt(cpfClean.substring(i - 1, i)) * (11 - i);
@@ -187,25 +187,25 @@ const Register: React.FC = () => {
             return '';
         },
 
-        confirmPassword: (value: string, password?: string): string => {
+        confirmPassword: (value: string, password: string): string => {
             if (!value) return 'Confirmação de senha é obrigatória';
             if (value !== password) return 'As senhas não coincidem';
             return '';
         }
     };
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         setApiError('');
         setSuccessMessage('');
         
-        const allTouched = Object.keys(touched).reduce<TouchedFields>(
-            (acc, key) => ({ ...acc, [key as keyof TouchedFields]: true }), 
+        const allTouched = Object.keys(touched).reduce(
+            (acc, key) => ({ ...acc, [key]: true }), 
             {} as TouchedFields
         );
         setTouched(allTouched);
 
-        const newErrors: FormErrors = {
+        const newErrors = {
             email: validators.email(formData.email),
             cpf: validators.cpf(formData.cpf.replace(/\D/g, '')),
             username: validators.username(formData.username),
@@ -232,7 +232,6 @@ const Register: React.FC = () => {
 
                 const response = await registerUser(userData);
                 setFormSubmitted(true);
-                console.log('Cadastro realizado com sucesso:', response);
                 
                 setFormData({
                     email: '',
@@ -253,10 +252,21 @@ const Register: React.FC = () => {
                 setErrors({
                     email: '',
                     cpf: '',
-                    username: '',
+                    username: '',                
                     password: '',
                     confirmPassword: ''
                 });
+
+                const loginResponse = await loginUser({
+                    email: userData.email,
+                    password: userData.password
+                });
+                                
+                const arrayToken = loginResponse.token.split('.');
+                const tokenPayload = JSON.parse(atob(arrayToken[1]));
+                localStorage.setItem('userId', tokenPayload.id);
+                const user = await getUserData();
+                localStorage.setItem('user', JSON.stringify(user));
 
                 window.location.href = '/home';
                 
@@ -287,7 +297,7 @@ const Register: React.FC = () => {
         return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     };
 
-    const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         let value = e.target.value;
         
         if (field === 'cpf') {
@@ -330,7 +340,7 @@ const Register: React.FC = () => {
             const validationError = validators.confirmPassword(formData.confirmPassword, formData.password);
             setErrors(prev => ({ ...prev, confirmPassword: validationError }));
         }
-    }, [formData.password, touched.confirmPassword, formData.confirmPassword]);
+    }, [formData.password, touched.confirmPassword]);
 
     return (
         <div className="register-container">
@@ -366,6 +376,7 @@ const Register: React.FC = () => {
                         onBlur={handleBlur('email')}
                         error={errors.email}
                         placeholder="Digite seu email"
+                        disabled={isLoading}
                     />
 
                     <Input 
@@ -376,6 +387,7 @@ const Register: React.FC = () => {
                         onBlur={handleBlur('cpf')}
                         error={errors.cpf}
                         placeholder="Digite o seu CPF"
+                        disabled={isLoading}
                     />  
 
                     <Input
@@ -386,17 +398,18 @@ const Register: React.FC = () => {
                         onBlur={handleBlur('username')}
                         error={errors.username}
                         placeholder="Digite o seu nome de usuário"
+                        disabled={isLoading}
                     />
-                    
-                    <Input 
-                        label="Senha" 
-                        type="password" 
-                        value={formData.password}
-                        onChange={handleChange('password')}
-                        onBlur={handleBlur('password')}
-                        error={errors.password}
-                        placeholder="Digite sua senha"
-                    />
+                  
+                  <Input 
+                      label="Senha" 
+                      type="password" 
+                      value={formData.password}
+                      onChange={handleChange('password')}
+                      onBlur={handleBlur('password')}
+                      error={errors.password}
+                      placeholder="Digite sua senha"
+                  />
 
                   <Input 
                       label="Confirmar senha" 
@@ -408,9 +421,7 @@ const Register: React.FC = () => {
                       placeholder="Confirme sua senha"
                   />
 
-                  <button type="submit" className="register-button">
-                      Cadastrar
-                  </button>
+                    <button type="submit" className="register-button">Cadastrar</button>
               </form>
           </div>
 
