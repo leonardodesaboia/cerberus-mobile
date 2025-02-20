@@ -3,22 +3,14 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-}
-
-.avatar-container {
-    margin-bottom: 20px;
-}
-
-.profile-avatar {
-    width: 8vh;
-    height: 8vh;
-    border: 3px solid #ccc;
+    margin-top: 40vh;
 }
 
 .profile-form {
     width: 90%;
     margin-left: 1rem;
     max-width: 400px;
+    margin-top: 5vh;
 }
 
 .info-section {
@@ -34,23 +26,19 @@
     color: #ffffff;
 }
 
-.save, .cancel, .logout, .delete-account {
+.save,.logout, .delete-account {
     display: flex;
     justify-content: center;
     margin-top: 10px;
 }
 
-.save-button, .cancel-button{
+.save-button{
     width: 100%;
     max-width: 200px;
     background-color: #4caf50;
     color: white;
     border-radius: 8px;
-}
-
-.cancel-button {
-    background-color: #ccc;
-    color: #333;
+    margin-top: 2rem;
 }
 
 .input-field:focus{

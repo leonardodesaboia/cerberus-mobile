@@ -107,9 +107,11 @@ const Profile: React.FC = () => {
     
 
     
-
+//pega o valor digitado no input
     const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+
+// att o estado do formulário, mantendo os outros campos inalterados
         setFormData(prev => ({ ...prev, [field]: value }));
         
         if (touched[field]) {
@@ -129,31 +131,22 @@ const Profile: React.FC = () => {
                 <IonToolbar>
                     <IonTitle className="profile-title">Sofya Oliveira</IonTitle>
                     <IonButtons slot="end">
-                        <IonButton>
-                            <IonIcon icon={close} />
-                        </IonButton>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
 
             <IonContent className="profile-content">
-                <div className="avatar-container">
-                    <IonAvatar className="profile-avatar">
-                        <img src="/avatar-placeholder.png" alt="Profile" />
-                    </IonAvatar>
-                </div>
+
 
                 <div className="profile-form">
                     <div className="info-section">
                         <IonLabel className="section-label">Username</IonLabel>
                         <Input 
-                            label="Username" 
                             type="text" 
                             value={formData.username}
                             onChange={handleChange('username')}
                             // onBlur={handleBlur('username')}
                             error={errors.username}
-                            placeholder="Digite seu username"
                             className='input-field'
                         />
                     </div>
@@ -161,7 +154,6 @@ const Profile: React.FC = () => {
                     <div className="info-section">
                         <IonLabel className="section-label">E-mail atual</IonLabel>
                         <Input 
-                            label="Email" 
                             type="email" 
                             value={formData.email}
                             onChange={handleChange('email')}
@@ -174,14 +166,11 @@ const Profile: React.FC = () => {
                     <div className="info-section">
                         <IonLabel className="section-label">Novo E-mail</IonLabel>
                         <Input 
-                            label="Email" 
                             type="email" 
                             value={formData.email}
                             onChange={handleChange('newEmail')}
                             // onBlur={handleBlur('email')}
                             error={errors.email}
-                            placeholder="Digite seu novo email"
-
                         />
                     </div>
 
@@ -191,17 +180,6 @@ const Profile: React.FC = () => {
                         className="save-button"
                         color="#FFFF">Salvar</IonButton>
                     </div>
-
-                    <div className="calcel">
-                    <IonButton 
-                        fill="clear" 
-                        className="cancel-button"
-                        color="#FFFF"
-                    >Cancelar</IonButton>
-                </div>
-
-                   
-
                 </div>
 
                 <div className="logout">
