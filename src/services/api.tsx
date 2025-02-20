@@ -52,9 +52,9 @@ export const getUserData = async () => {
 
     const data = await response.json();
     console.log(data)
-    console.log(data.paperDiscarted)
-    console.log(data.metalDiscarted)
-    console.log(data.username)
+    // console.log(data.paperDiscarted)
+    // console.log(data.metalDiscarted)
+    // console.log(data.username)
 
     
     if (!response.ok) {

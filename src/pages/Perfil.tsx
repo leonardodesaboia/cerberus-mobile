@@ -1,201 +1,116 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonLabel, IonAvatar } from '@ionic/react';
-import { close } from 'ionicons/icons';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
 import '../styles/Perfil.css';
-
-interface FormData {
-    username: string;
-    email: string;
-    newEmail: string;
-    
-}
-
-interface FormErrors {
-    username: string;
-    email: string;
-    newEmail: string;
-}
-
-interface TouchedFields {
-    username: boolean;
-    email: boolean;
-    newEmail: boolean;
-}
-
-type ValidatorFunction = (value: string, compareValue?: string) => string;
-
-interface Validators {
-    username: ValidatorFunction;
-    email: ValidatorFunction;
-    newEmail: ValidatorFunction;
-}
+import { getUserData, editUserData } from '../services/api';
 
 const Profile: React.FC = () => {
-    const [formData, setFormData] = useState<FormData>({
-        username: '',
-        email: '',
-        newEmail: '',
-        
-    });
+    const [userName, setUserName] = useState('');
+    const [currentEmail, setCurrentEmail] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [originalEmail, setOriginalEmail] = useState('');
+    const [userId, setUserId] = useState('');
 
-    const [errors, setErrors] = useState<FormErrors>({
-        username: '',
-        email: '',
-        newEmail: '',
-
-        
-    });
-
-    const [touched, setTouched] = useState<TouchedFields>({
-        username: false,
-        email: false,
-        newEmail: false,
-        
-    });
-
-    const validators: Validators = {
-        username: (value: string): string => {
-            if (value.length < 3) return 'Username deve ter no mínimo 3 caracteres';
-            if (value.length > 20) return 'Username deve ter no máximo 20 caracteres';
-            if (!/^[a-zA-Z0-9_]+$/.test(value)) return 'Username deve conter apenas letras, números e _';
-            return '';
-        },
-    
-        email: (value: string): string => {
-            if (!value) return 'Email é obrigatório';
-    
-            value = value.trim();
-    
-            const atCount = (value.match(/@/g) || []).length;
-            if (atCount !== 1) return 'Email deve conter exatamente um @';
-    
-            const [localPart, domain] = value.split('@');
-    // qtd de carct do email
-            if (!localPart || localPart.length < 3) return 'Parte local do email deve ter pelo menos 3 caracteres';
-            if (localPart.length > 64) return 'Parte local do email não pode ter mais de 64 caracteres';
-    //regex
-            const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
-            if (!localPartRegex.test(localPart)) {
-                return 'Parte local do email deve começar e terminar com letra ou número';
+    //carregar dados do usuario
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                const userData = await getUserData();
+                setUserName(userData.userName || '');
+                setCurrentEmail(userData.email || '');
+                setOriginalEmail(userData.email || '');
+                setUserId(userData.id || '');
+            } catch (error) {
+                console.error('Erro ao carregar dados do usuário:', error);
             }
-    //verifica se está vazio
-            if (!domain) return 'Domínio do email não pode estar vazio';
-            if (domain.length > 255) return 'Domínio do email não pode ter mais de 255 caracteres';
-            if (!domain.includes('.')) return 'Domínio deve conter pelo menos um ponto';
-    //regex
-            const domainRegex = /^[a-zA-Z][-a-zA-Z.]*[a-zA-Z](\.[a-zA-Z]{2,})+$/;
-            if (!domainRegex.test(domain)) {
-                return 'Domínio deve conter apenas letras, pontos e hífens';
-            }
-    
-            return '';
-        },
-    //novo email ( q vai ser substituido)
-        newEmail: (value: string, compareValue?: string): string => {
-            const emailError = validators.email(value);
-            if (emailError) return `Novo email inválido: ${emailError}`;
-    
-            if (compareValue && value === compareValue) {
-                return 'O novo email não pode ser igual ao email atual';
-            }
-    
-            return '';
-        }
-    };
-    
+        };
+        loadUserData();
+    }, []);
 
-    
-//pega o valor digitado no input
-    const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-
-// att o estado do formulário, mantendo os outros campos inalterados
-        setFormData(prev => ({ ...prev, [field]: value }));
+    //salvar mudanças no db
+    const handleSaveChanges = async () => {
+        const updates: { username?: string; email?: string } = {};
+        if (userName.trim()) updates.username = userName;
+        if (newEmail.trim() && newEmail !== originalEmail) updates.email = newEmail;
         
-        if (touched[field]) {
-            const validationError = field === 'newEmail' 
-                ? validators[field](value, formData.newEmail)
-                : validators[field](value);
-            setErrors(prev => ({ ...prev, [field]: validationError }));
+        if (Object.keys(updates).length === 0) return;
+        
+        try {
+            const updatedUser = await editUserData(updates);
+            setUserName(updatedUser.userName);
+            setCurrentEmail(updatedUser.email);
+            setOriginalEmail(updatedUser.email);
+            setNewEmail('');
+        } catch (error) {
+            console.error('Erro ao salvar alterações:', error);
         }
     };
 
- 
+    const handleLogout = () => {
+        alert('Saiu');
+    };
 
+    //deletar usuario erro!!
+    const deleteUser = async () => {
+        const confirmDelete = window.confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.');
+        if (!confirmDelete) return;
+        
+        try {
+            const response = await fetch(`http://localhost:3000/delete/${id}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Erro ao excluir perfil');
+            }
+            // colocar pop up
+            alert('Conta excluída com sucesso. Você será redirecionado.');
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
 
     return (
         <IonPage>
             <IonHeader className="ion-no-border">
                 <IonToolbar>
-                    <IonTitle className="profile-title">Sofya Oliveira</IonTitle>
-                    <IonButtons slot="end">
-                    </IonButtons>
+                    <IonTitle className="profile-title">Perfil</IonTitle>
+                    <IonButtons slot="end"></IonButtons>
                 </IonToolbar>
             </IonHeader>
 
             <IonContent className="profile-content">
-
-
+                {/* editar usuario e email, sair e deletar conta */}
                 <div className="profile-form">
                     <div className="info-section">
-                        <IonLabel className="section-label">Username</IonLabel>
-                        <Input 
-                            type="text" 
-                            value={formData.username}
-                            onChange={handleChange('username')}
-                            // onBlur={handleBlur('username')}
-                            error={errors.username}
-                            className='input-field'
-                        />
+                        <IonLabel className="section-label">Usuário</IonLabel>
+                        <Input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} className='input-field' />
                     </div>
 
                     <div className="info-section">
                         <IonLabel className="section-label">E-mail atual</IonLabel>
-                        <Input 
-                            type="email" 
-                            value={formData.email}
-                            onChange={handleChange('email')}
-                            // onBlur={handleBlur('email')}
-                            error={errors.email}
-                            placeholder="Digite seu email atual"
-                        />
+                        <Input type="email" value={currentEmail} disabled className='input-field' />
                     </div>
 
                     <div className="info-section">
                         <IonLabel className="section-label">Novo E-mail</IonLabel>
-                        <Input 
-                            type="email" 
-                            value={formData.email}
-                            onChange={handleChange('newEmail')}
-                            // onBlur={handleBlur('email')}
-                            error={errors.email}
-                        />
+                        <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className='input-field' />
                     </div>
-
+                    {/* bor=toes salvar,sair e deletar */}
                     <div className="save">
-                    <IonButton 
-                        fill="clear" 
-                        className="save-button"
-                        color="#FFFF">Salvar</IonButton>
+                        <IonButton fill="clear" className="save-button" onClick={handleSaveChanges}>Salvar</IonButton>
                     </div>
                 </div>
 
                 <div className="logout">
-                    <IonButton 
-                        fill="clear" 
-                        className="logout-button"
-                        color="#FFFF"
-                    >Sair</IonButton>
+                    <IonButton fill="clear" className="logout-button" onClick={handleLogout}>Sair</IonButton>
                 </div>
 
                 <div className="delete-account">
-                    <IonButton 
-                        fill="clear" 
-                        className="delete-button"
-                        color="danger"
-                    >Deletar conta </IonButton>
+                    <IonButton fill="clear" className="delete-button" color="danger" onClick={deleteUser}>Deletar conta</IonButton>
                 </div>
             </IonContent>
             
