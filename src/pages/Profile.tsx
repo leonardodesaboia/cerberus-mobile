@@ -2,7 +2,7 @@ import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBu
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
-import '../styles/Perfil.css';
+import '../styles/Profile.css';
 import { getUserData, editUserData } from '../services/api';
 
 const Profile: React.FC = () => {
@@ -17,7 +17,7 @@ const Profile: React.FC = () => {
         const loadUserData = async () => {
             try {
                 const userData = await getUserData();
-                setUserName(userData.userName || '');
+                setUserName(userData.username || '');
                 setCurrentEmail(userData.email || '');
                 setOriginalEmail(userData.email || '');
                 setUserId(userData.id || '');
@@ -38,7 +38,7 @@ const Profile: React.FC = () => {
         
         try {
             const updatedUser = await editUserData(updates);
-            setUserName(updatedUser.userName);
+            setUserName(updatedUser.username);
             setCurrentEmail(updatedUser.email);
             setOriginalEmail(updatedUser.email);
             setNewEmail('');
@@ -77,17 +77,19 @@ const Profile: React.FC = () => {
         <IonPage>
             <IonHeader className="ion-no-border">
                 <IonToolbar>
-                    <IonTitle className="profile-title">Perfil</IonTitle>
+                    <IonTitle className="profile-title">Meu cadastro</IonTitle>
                     <IonButtons slot="end"></IonButtons>
                 </IonToolbar>
             </IonHeader>
 
             <IonContent className="profile-content">
+
+                
                 {/* editar usuario e email, sair e deletar conta */}
                 <div className="profile-form">
                     <div className="info-section">
                         <IonLabel className="section-label">Usuário</IonLabel>
-                        <Input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} className='input-field' />
+                        <Input type="text" placeholder="Usuário" value={userName} onChange={(e) => setUserName(e.target.value)} className='input-field' />
                     </div>
 
                     <div className="info-section">
@@ -103,14 +105,13 @@ const Profile: React.FC = () => {
                     <div className="save">
                         <IonButton fill="clear" className="save-button" onClick={handleSaveChanges}>Salvar</IonButton>
                     </div>
-                </div>
-
-                <div className="logout">
+                    <div className="logout">
                     <IonButton fill="clear" className="logout-button" onClick={handleLogout}>Sair</IonButton>
                 </div>
 
                 <div className="delete-account">
                     <IonButton fill="clear" className="delete-button" color="danger" onClick={deleteUser}>Deletar conta</IonButton>
+                </div>
                 </div>
             </IonContent>
             

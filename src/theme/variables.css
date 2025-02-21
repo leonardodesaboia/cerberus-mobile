@@ -1,20 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
-IonToolbar{
-  --padding-top: 0 !important;;
+:root {
+  --ion-primary-color:#174204;
+  --ion-secondary-color: #86C26D;
+  --ion-tertiary-color:#326D19;
+  --ion-danger-color:#9A1200; 
+  --ion-success-color:#118B01;
+  --ion-background-color-rgb: 245, 249, 241;
 }
 
-:root {
-  --ion-primary-color:#174204 ;
-  --ion-secondary-color: #86C26D;
-  --ion-tertiary-color:#326D19 ;
-  --ion-danger-color:#9A1200 ; 
-  --ion-success-color:#118B01 ;
-  --ion-light-color:#F1F1F1 ;
+/* Estilo global para páginas */
+ion-content {
+  --background: #f2f2f2;
+  z-index: -1;
+}
+
+/* Estilo para cabeçalho com fundo semitransparente */
+ion-header {
+  background: rgba(245, 249, 241, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+IonToolbar {
+  --padding-top: 0 !important;
 }
 
 * {
-  margin-top: -1px ;
+  margin-top: -1px;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Lato', sans-serif;
@@ -36,6 +48,11 @@ ion-tab-button {
   color: #666; 
 }
 
+ion-tab-bar{
+  --background: #fbfbfb;
+  margin: 0;
+}
+
 .input-container {
   display: flex;
   flex-direction: column;
@@ -52,7 +69,7 @@ ion-tab-button {
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: var(--light-color);
+  background-color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
 }
 
@@ -69,10 +86,6 @@ ion-tab-button {
   }
 }
 
-.store-header {
-  border-radius: 0 0 30px 30px;
-}
-
 .store-header ion-toolbar {
   --background: transparent;
   --border-style: none;
@@ -80,35 +93,37 @@ ion-tab-button {
 }
 
 .custom-title {
-  color: white;
-  margin: 1.5rem 0 0.8rem 1rem;
+  color: var(--ion-primary-color);
+  margin: 1.5rem 0 0.8rem 1.5rem;
+  font-size: 30px;
+  font-weight: 800;
 }
 
 .points-display {
-  margin-left: 1rem ;
+  margin-left: 1rem;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .points-display ion-label {
   display: block;
-  color: white;
+  color: var(--ion-primary-color);
   font-size: 16px;
   margin-bottom: 5px;
 }
 
-.points-display h2 {
-  color: white;
+.points-display h3 {
+  color: var(--ion-primary-color);
   font-size: 28px;
   margin: 0;
   font-weight: bold;
 }
 
-  /* Ajustes para o IonHeader */
-  ion-header.header-collapse-condense ion-toolbar {
-    --background: var(--ion-primary-color);
-  }
-  
-  /* Remove bordas padrão do IonCard */
-  ion-card {
-    margin: 0;
-    box-shadow: none;
-  }
+/* Ajustes para o IonHeader */
+ion-header.header-collapse-condense ion-toolbar {
+  --background: rgba(200, 255, 145, 0.4);
+}
+
+ion-card {
+  margin: 0;
+}

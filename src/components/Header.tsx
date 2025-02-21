@@ -1,34 +1,37 @@
-// Header.tsx
 import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { getUserData } from "../services/api";
+import PointsUpdateEvent from "../utils/pointsUpdateEvent";
 
-interface HeaderProps {
-    points: number;
-    shouldRefresh: boolean;
-}
-
-const Header: React.FC<HeaderProps> = ({ points, shouldRefresh }) => {
+const Header: React.FC = () => {
     const [username, setUsername] = useState<string>("");
     const [currentPoints, setCurrentPoints] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData();
-                setUsername(userData.username);
-                setCurrentPoints(userData.points);
-            } catch (err) {
-                setError("Erro ao carregar dados do usuário");
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchUserData = async () => {
+        try {
+            const userData = await getUserData();
+            setUsername(userData.username);
+            setCurrentPoints(userData.points);
+        } catch (err) {
+            setError("Erro ao carregar dados do usuário");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchUserData();
-    }, [shouldRefresh]);
+        
+        // Registrar o listener para atualizações de pontos
+        PointsUpdateEvent.subscribe(fetchUserData);
+
+        // Cleanup
+        return () => {
+            PointsUpdateEvent.unsubscribe(fetchUserData);
+        };
+    }, []);
 
     if (loading) {
         return (
@@ -51,15 +54,15 @@ const Header: React.FC<HeaderProps> = ({ points, shouldRefresh }) => {
     }
 
     return (
-        <IonHeader className="store-header" collapse="condense" style={{ padding: "0 !important"}}>
-            <IonToolbar className="custom-toolbar" style={{ padding: "0 !important"}}>
+        <IonHeader className="store-header" collapse="condense" >
+            <IonToolbar className="custom-toolbar">
                 <IonTitle size="large" className="custom-title">
                     Bem vindo(a) {username}!
                 </IonTitle>
                 <div className="points-display">
-                    <IonLabel>Seu saldo de pontos</IonLabel>
+                    <IonLabel className="custom-saldo">Seu saldo de pontos</IonLabel>
                     <IonText>
-                        <h2>{currentPoints}</h2>
+                        <h3 className="custom-points">{currentPoints} <ion-icon name="chevron-forward-outline" style={{fontSize: "20px"}}></ion-icon></h3>
                     </IonText>
                 </div>
             </IonToolbar>

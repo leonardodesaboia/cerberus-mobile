@@ -14,6 +14,7 @@ interface LoginData {
 }
 
 interface UserData {
+  id: string;
   _id: string;
   email: string;
   username: string;

@@ -1,18 +1,10 @@
-.waste-stats-section {
-    margin: 3rem 1rem;  /* Reduced side margins for mobile */
-    padding: 1.5rem;    /* Slightly reduced padding for mobile */
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
 .section-title {
-    font-size: 1.5rem;
-    text-align: center;
+    margin-top: 0;
+    font-weight: 600;
 }
 
 .chart-container {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     background: white;
     padding: 1rem;
     border-radius: 0.5rem;
@@ -60,10 +52,6 @@
         padding: 1rem;
     }
 
-    .section-title {
-        font-size: 1.25rem;
-    }
-
     .chart-container {
         flex-direction: column;
         padding: 0.5rem;
@@ -84,24 +72,6 @@
     }
 }
 
-@media screen and (max-width: 480px) {
-    .waste-stats-section {
-        margin: 1rem 0.25rem;
-    }
-
-    .chart-container > div:first-child {
-        height: 200px !important;
-    }
-
-    .legend-container {
-        font-size: 13px;
-    }
-
-    .legend-color {
-        width: 14px;
-        height: 14px;
-    }
-}
 
 /* Fix for Safari flexbox gap support */
 @supports not (gap: 20px) {

@@ -27,12 +27,12 @@ const Home: React.FC = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, [shouldRefreshHeader]);
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        <Header points={userPoints} shouldRefresh={shouldRefreshHeader}/>
+        <Header />
         <IonText className="title-text-home">
           <h2 className='achievements-title-home'>Conquistas desbloqueadas</h2>
         </IonText>

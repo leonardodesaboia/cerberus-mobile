@@ -1,153 +1,150 @@
-.custom-toolbar {
-  --background: var(--ion-primary-color);
-  --min-height: 60px;
-  padding: 5rem 15px;
-  border-radius: 0 0 25px 25px;
+/* Estilos gerais */
+.custom-saldo {
+  color: white;
 }
 
-.custom-saldo{
-  color: white
+/* Título das conquistas */
+.title-text-home {
+  margin-left: 1rem;    
 }
-  
-  /* Estilos do Card */
-  .custom-card {
-    margin: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .custom-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-  }
-  
-  .custom-card ion-card-header {
-    padding: 15px;
-  }
-  
-  .custom-card ion-card-title {
-    font-size: 1.4em;
-    font-weight: 600;
-    color: var(--ion-color-dark);
-  }
-  
-  .custom-card ion-card-subtitle {
-    font-size: 1.1em;
-    color: var(--ion-color-medium);
-  }
-  
-  .custom-card ion-card-content {
-    padding: 0 15px 15px;
-    font-size: 1em;
-    line-height: 1.4;
-    color: var(--ion-color-medium-shade);
-  }
 
-  .material-symbols-outlined {
-    font-variation-settings:
+.achievements-title-home {
+  font-weight: 600;
+  margin-left: 20px;
+}
+
+/* Container de conquistas */
+.achievements-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.empty-achievements {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Estilos do Card */
+.custom-card {
+  margin: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  position: relative;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fbfbfb;
+}
+
+.custom-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.custom-card ion-card-header {
+  padding: 15px;
+}
+
+.custom-card ion-card-title {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+}
+
+.custom-card ion-card-subtitle {
+  font-size: 1.1em;
+  color: var(--ion-color-medium);
+}
+
+.custom-card ion-card-content {
+  padding: 0 15px 15px;
+  font-size: 1em;
+  line-height: 1.4;
+  color: var(--ion-color-medium-shade);
+}
+
+/* Estados do card */
+.custom-card.locked {
+  opacity: 0.7;
+}
+
+.custom-card.unlocked {
+  opacity: 1;
+}
+
+/* Ícone de troféu */
+.trophy-icon {
+  font-size: 100px;
+  margin-bottom: 1rem;
+}
+
+.trophy-icon.locked {
+  color: #666;
+}
+
+.trophy-icon.bronze {
+  color: #CD7F32;
+}
+
+.trophy-icon.silver {
+  color: #C0C0C0;
+}
+
+.trophy-icon.gold {
+  color: #FFD700;
+}
+
+/* Barra de progresso */
+.progress-container {
+  position: relative;
+  height: 20px;
+  background-color: #eee;
+  border-radius: 10px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-weight: bold;
+}
+
+/* Status da conquista */
+.achievement-status {
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.achievement-status.unlocked {
+  color: #4CAF50;
+}
+
+/* Ajustes do Swiper */
+.swiper-pagination {
+  bottom: 0px !important;
+}
+
+/* Material Icons */
+.material-symbols-outlined {
+  font-variation-settings:
     'FILL' 1,
     'wght' 400,
     'GRAD' 0,
-    'opsz' 24
-  }
-  
-  .custom-card {
-    text-align: center;
-  }
-  
-  .title-text-home {
-    margin-left: 1rem;    
-  }
-
-  .swiper-pagination{
-    bottom: 0px !important;
-  }
-
-  .achievements-title-home {
-    font-weight: 600;
-    margin-left: 20px;
-  }
-
-  .achievements-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .empty-achievements {
-    text-align: center;
-    padding: 2rem;
-    color: #666;
-  }
-  
-  .custom-card {
-    position: relative;
-    padding: 1rem;
-    transition: all 0.3s ease;
-  }
-  
-  .custom-card.locked {
-    opacity: 0.7;
-  }
-  
-  .custom-card.unlocked {
-    opacity: 1;
-  }
-  
-  .trophy-icon {
-    font-size: 100px;
-    margin-bottom: 1rem;
-  }
-  
-  .trophy-icon.locked {
-    color: #666;
-  }
-  
-  .trophy-icon.bronze {
-    color: #CD7F32;
-  }
-  
-  .trophy-icon.silver {
-    color: #C0C0C0;
-  }
-  
-  .trophy-icon.gold {
-    color: #FFD700;
-  }
-  
-  .progress-container {
-    position: relative;
-    height: 20px;
-    background-color: #eee;
-    border-radius: 10px;
-    margin: 1rem 0;
-    overflow: hidden;
-  }
-  
-  .progress-bar {
-    height: 100%;
-    background-color: #4CAF50;
-    transition: width 0.3s ease;
-  }
-  
-  .progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #000;
-    font-weight: bold;
-  }
-  
-  .achievement-status {
-    text-align: center;
-    margin-top: 1rem;
-    font-weight: bold;
-  }
-  
-  .achievement-status.unlocked {
-    color: #4CAF50;
-  }
+    'opsz' 24;
+}

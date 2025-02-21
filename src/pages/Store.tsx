@@ -8,6 +8,7 @@ import '../styles/Store.css';
 import Toolbar from '../components/Toolbar';
 import Header from '../components/Header';
 import { updateUserPoints, products, getUserData } from '../services/api';
+import PointsUpdateEvent from '../utils/pointsUpdateEvent';
 
 interface Product {
     _id: string;
@@ -44,7 +45,7 @@ const Store: React.FC = () => {
         };
 
         fetchUserData();
-    }, []);
+    }, [shouldRefreshHeader]);
 
     // Carregar produtos
     useEffect(() => {
@@ -94,18 +95,18 @@ const Store: React.FC = () => {
 
     const handlePurchaseConfirmation = async () => {
         if (!selectedProduct) return;
-
+    
         const newPoints = userPoints - selectedProduct.price;
-
+    
         if (newPoints < 0) {
             setError('Pontos insuficientes para esta troca');
             return;
         }
-
+    
         try {
             await updateUserPoints(newPoints);
             setUserPoints(newPoints);
-            setShouldRefreshHeader(prev => !prev);
+            PointsUpdateEvent.emit();
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
@@ -130,7 +131,7 @@ const Store: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <Header points={userPoints} shouldRefresh={shouldRefreshHeader} />
+                <Header />
 
                 <div className="store-content">
                     <IonText className="title-text">
@@ -151,7 +152,7 @@ const Store: React.FC = () => {
                             <Swiper
                                 modules={[Pagination]}
                                 spaceBetween={10}
-                                slidesPerView={3.3}
+                                slidesPerView={2.3}
                                 className="products-swiper-store"
                             >
                                 {section.products.map((product) => (

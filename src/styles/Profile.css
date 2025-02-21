@@ -1,16 +1,8 @@
-.profile-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    margin-top: 40vh;
-}
-
 .profile-form {
     width: 90%;
-    margin-left: 1rem;
-    max-width: 400px;
-    margin-top: 5vh;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,30%);
 }
 
 .info-section {
@@ -44,15 +36,3 @@
 .input-field:focus{
     border-color: var(--ion-primary-color);
 }
-
-/* .logout-button {
-    background-color: #ff9800;
-}
-
-.delete-button {
-    width: 100%;
-    max-width: 200px;
-    background-color: #d32f2f;
-    color: white;
-    border-radius: 8px;
-} */
