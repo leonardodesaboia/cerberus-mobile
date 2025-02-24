@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import '../styles/Store.css';
 import Toolbar from '../components/Toolbar';
 import Header from '../components/Header';
-import { updateUserPoints, products, getUserData } from '../services/api';
+import { updateUserPoints, fetchProducts, getUserData,redeemProduct } from '../services/api';
 import PointsUpdateEvent from '../utils/pointsUpdateEvent';
 
 interface Product {
@@ -16,8 +16,8 @@ interface Product {
     price: number;
     img: string;
     isActive: boolean;
-}
-
+    stock: number;
+  }
 interface Section {
     title: string;
     products: Product[];
@@ -31,10 +31,11 @@ const Store: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [userPoints, setUserPoints] = useState<number>(0);
     const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     // Carregar dados do usuário
     useEffect(() => {
-        const fetchUserData = async () => {
+        const loadUserData = async () => {
             try {
                 const userData = await getUserData();
                 setUserPoints(userData.points);
@@ -44,14 +45,14 @@ const Store: React.FC = () => {
             }
         };
 
-        fetchUserData();
+        loadUserData();
     }, [shouldRefreshHeader]);
 
     // Carregar produtos
     useEffect(() => {
-        const fetchProducts = async () => {
+        const loadProducts = async () => {
             try {
-                const productsData = await products({});
+                const productsData = await fetchProducts();
                 const activeProducts = productsData.filter((product: Product) => product.isActive);
 
                 const sections: Section[] = [
@@ -78,7 +79,7 @@ const Store: React.FC = () => {
             }
         };
 
-        fetchProducts();
+        loadProducts();
     }, []);
 
     const handleProductClick = (product: Product) => {
@@ -104,15 +105,34 @@ const Store: React.FC = () => {
         }
     
         try {
-            await updateUserPoints(newPoints);
+            setLoading(true);
+            console.log("Iniciando processo de resgate do produto:", selectedProduct.name);
+            
+            // Usar redeemProduct ao invés de updateUserPoints
+            const updatedUserData = await redeemProduct(selectedProduct);
+            console.log("Produto resgatado com sucesso. Dados atualizados:", updatedUserData);
+            
+            // Verificar explicitamente se o produto foi adicionado
+            const productAdded = updatedUserData.redeemed?.some(p => p._id === selectedProduct._id);
+            console.log("Produto encontrado na lista de resgatados:", productAdded ? "Sim" : "Não");
+            
+            // Atualizar interface
             setUserPoints(newPoints);
             PointsUpdateEvent.emit();
+            
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
-        } catch (err) {
-            setError('Erro ao processar a troca');
+            setSuccessMessage(`${selectedProduct.name} resgatado com sucesso!`);
+            
+            // Redirecionar para página de resgates após sucesso
+            console.log("Redirecionando para página de resgates...");
+
+        } catch (err: any) {
             console.error('Erro ao processar a troca:', err);
+            setError(`Erro ao processar a troca: ${err.message || 'Erro desconhecido'}`);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -203,3 +223,4 @@ const Store: React.FC = () => {
 };
 
 export default Store;
+

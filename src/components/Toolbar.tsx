@@ -24,7 +24,16 @@ const Toolbar: React.FC = () => {
         <IonIcon icon="storefront-sharp" className="toolbar-icons" />
         <IonLabel>Loja</IonLabel>
       </IonTabButton>
-      
+
+      <IonTabButton 
+        tab="redeem" 
+        href="/redeem"
+        className={currentPath === '/redeem' ? 'active-tab' : ''}
+      >
+        <IonIcon icon="gift-outline" className="toolbar-icons" />
+        <IonLabel>Meus produtos</IonLabel>
+      </IonTabButton>
+            
       <IonTabButton 
         tab="config" 
         href="/config"

@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
@@ -8,8 +8,6 @@ import { getUserData, editUserData } from '../services/api';
 const Profile: React.FC = () => {
     const [userName, setUserName] = useState('');
     const [currentEmail, setCurrentEmail] = useState('');
-    const [newEmail, setNewEmail] = useState('');
-    const [originalEmail, setOriginalEmail] = useState('');
     const [userId, setUserId] = useState('');
 
     //carregar dados do usuario
@@ -19,8 +17,7 @@ const Profile: React.FC = () => {
                 const userData = await getUserData();
                 setUserName(userData.username || '');
                 setCurrentEmail(userData.email || '');
-                setOriginalEmail(userData.email || '');
-                setUserId(userData.id || '');
+                setUserId(userData._id || '');
             } catch (error) {
                 console.error('Erro ao carregar dados do usuário:', error);
             }
@@ -29,56 +26,24 @@ const Profile: React.FC = () => {
     }, []);
 
     //salvar mudanças no db
-    const handleSaveChanges = async () => {
-        const updates: { username?: string; email?: string } = {};
-        if (userName.trim()) updates.username = userName;
-        if (newEmail.trim() && newEmail !== originalEmail) updates.email = newEmail;
-        
-        if (Object.keys(updates).length === 0) return;
-        
-        try {
-            const updatedUser = await editUserData(updates);
-            setUserName(updatedUser.username);
-            setCurrentEmail(updatedUser.email);
-            setOriginalEmail(updatedUser.email);
-            setNewEmail('');
-        } catch (error) {
-            console.error('Erro ao salvar alterações:', error);
-        }
+    const changeWindow = async () => {
+        window.location.href = '/edit-profile';
     };
 
     const handleLogout = () => {
-        alert('Saiu');
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('user');
+        window.location.href = '/';
     };
 
     //deletar usuario erro!!
-    const deleteUser = async () => {
-        const confirmDelete = window.confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.');
-        if (!confirmDelete) return;
-        
-        try {
-            const response = await fetch(`http://localhost:3000/delete/${userId}`, {
-                method: 'DELETE',
-            });
-            if (!response.ok) {
-                throw new Error('Erro ao excluir perfil');
-            }
-            // colocar pop up
-            alert('Conta excluída com sucesso. Você será redirecionado.');
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
-        } catch (error) {
-            console.error(error instanceof Error ? error.message : 'An unknown error occurred');
-        }
-    };
 
     return (
         <IonPage>
             <IonHeader className="ion-no-border">
-                <IonToolbar>
+                <IonToolbar className='toolbar-profile'>
                     <IonTitle className="profile-title">Meu cadastro</IonTitle>
-                    <IonButtons slot="end"></IonButtons>
                 </IonToolbar>
             </IonHeader>
 
@@ -89,28 +54,20 @@ const Profile: React.FC = () => {
                 <div className="profile-form">
                     <div className="info-section">
                         <IonLabel className="section-label">Usuário</IonLabel>
-                        <Input type="text" placeholder="Usuário" value={userName} onChange={(e) => setUserName(e.target.value)} className='input-field' />
+                        <h2 className='input-field' >{userName} <IonIcon icon="chevron-forward-outline" className='icon-profile' onClick={changeWindow} /></h2>
                     </div>
 
                     <div className="info-section">
-                        <IonLabel className="section-label">E-mail atual</IonLabel>
-                        <Input type="email" value={currentEmail} disabled className='input-field' />
+                        <IonLabel className="section-label">E-mail</IonLabel>
+                        <h2 className='input-field' >{currentEmail} <IonIcon icon="chevron-forward-outline" className='icon-profile' onClick={changeWindow} /></h2>
                     </div>
 
-                    <div className="info-section">
-                        <IonLabel className="section-label">Novo E-mail</IonLabel>
-                        <Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className='input-field' />
-                    </div>
                     {/* bor=toes salvar,sair e deletar */}
                     <div className="save">
-                        <IonButton fill="clear" className="save-button" onClick={handleSaveChanges}>Salvar</IonButton>
+                        <IonButton fill="clear" className="save-button" onClick={changeWindow}><IonIcon icon="create-outline" />Editar informações</IonButton>
                     </div>
                     <div className="logout">
                     <IonButton fill="clear" className="logout-button" onClick={handleLogout}>Sair</IonButton>
-                </div>
-
-                <div className="delete-account">
-                    <IonButton fill="clear" className="delete-button" color="danger" onClick={deleteUser}>Deletar conta</IonButton>
                 </div>
                 </div>
             </IonContent>

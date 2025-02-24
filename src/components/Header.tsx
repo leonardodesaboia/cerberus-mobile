@@ -1,4 +1,4 @@
-import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText } from "@ionic/react";
+import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText, IonIcon } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { getUserData } from "../services/api";
 import PointsUpdateEvent from "../utils/pointsUpdateEvent";
@@ -55,14 +55,14 @@ const Header: React.FC = () => {
 
     return (
         <IonHeader className="store-header" collapse="condense" >
-            <IonToolbar className="custom-toolbar">
+            <IonToolbar>
                 <IonTitle size="large" className="custom-title">
                     Bem vindo(a) {username}!
                 </IonTitle>
                 <div className="points-display">
                     <IonLabel className="custom-saldo">Seu saldo de pontos</IonLabel>
                     <IonText>
-                        <h3 className="custom-points">{currentPoints} <ion-icon name="chevron-forward-outline" style={{fontSize: "20px"}}></ion-icon></h3>
+                        <h3 className="custom-points">{currentPoints} <IonIcon icon="chevron-forward-outline" style={{fontSize: "20px"}} /></h3>
                     </IonText>
                 </div>
             </IonToolbar>

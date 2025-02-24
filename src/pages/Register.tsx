@@ -345,7 +345,7 @@ const Register: React.FC = () => {
     return (
         <div className="register-container">
             <div className="register-header">
-                <h1>Cerberus</h1>
+            <h1 className='register-title'><span className="material-symbols-outlined">recycling</span>Ecopoints</h1>
             </div>
 
             <div className="form-container-register">

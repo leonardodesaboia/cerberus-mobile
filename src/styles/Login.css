@@ -89,6 +89,23 @@
     max-height: 250px;
     width: 100%;
   }
+
+  .login-title .material-symbols-outlined{
+    font-size: 28px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .showPass{
+    all: unset;
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    color: #000000;
+    align-self: flex-end;
+    margin-top:-30px;
+  }
   
   /* Responsividade */
   @media (min-width: 768px) {

@@ -16,6 +16,7 @@ import Store from './pages/Store';
 import Config from './pages/Profile';
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Redeem from './pages/Redeem'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -46,6 +47,8 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import EditProfile from './pages/EditProfile';
+import RedeemedProducts from './pages/Redeem';
 
 setupIonicReact();
 
@@ -68,6 +71,12 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/register">
             <Register />
+          </Route>
+          <Route exact path="/edit-profile">
+            <EditProfile />
+          </Route>
+          <Route exact path="/redeem">
+            <Redeem />
           </Route>
           <Route exact path="/">
             <Redirect to="/login" />

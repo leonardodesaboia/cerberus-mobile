@@ -124,20 +124,16 @@
     box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
   }
   
-  .input-error {
-    border-color: #dc3545;
-    background-color: #fff;
-  }
-  
-  .input-error:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
-  }
-  
   .error-message {
     color: #dc3545;
     font-size: 0.75rem;
     margin-top: 4px;
+  }
+
+  .register-title .material-symbols-outlined{
+    font-size: 28px;
+    margin: 0;
+    padding: 0;
   }
   
   @media (min-width: 768px) {

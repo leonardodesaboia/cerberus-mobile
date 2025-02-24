@@ -5,6 +5,19 @@
     transform: translate(-50%,30%);
 }
 
+.toolbar-profile {
+    padding: 20px;
+    --background-color: var(--ion-primary-color);
+}
+
+.profile-title {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 24px;
+    margin-top: 10px; 
+
+}
+
 .info-section {
     margin-bottom: 15px;
     display: flex;
@@ -31,8 +44,15 @@
     color: rgb(0, 0, 0);
     border-radius: 8px;
     margin-top: 2rem;
+    color: white;
 }
 
 .input-field:focus{
     border-color: var(--ion-primary-color);
+}
+
+.icon-profile{
+    margin: 0;
+    right: 10px;
+    position: absolute;
 }
