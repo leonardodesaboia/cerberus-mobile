@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
+import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert, IonCardHeader, IonCardSubtitle, IonCardTitle, IonToast } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { useState, useEffect } from 'react';
@@ -7,8 +7,9 @@ import 'swiper/css/pagination';
 import '../styles/Store.css';
 import Toolbar from '../components/Toolbar';
 import Header from '../components/Header';
-import { updateUserPoints, fetchProducts, getUserData,redeemProduct } from '../services/api';
+import { updateUserPoints, fetchProducts, getUserData, redeemProduct } from '../services/api';
 import PointsUpdateEvent from '../utils/pointsUpdateEvent';
+import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
 
 interface Product {
     _id: string;
@@ -17,13 +18,15 @@ interface Product {
     img: string;
     isActive: boolean;
     stock: number;
-  }
+}
+
 interface Section {
     title: string;
     products: Product[];
 }
 
 const Store: React.FC = () => {
+    const history = useHistory(); // Use history for navigation
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [productSections, setProductSections] = useState<Section[]>([]);
@@ -31,7 +34,8 @@ const Store: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [userPoints, setUserPoints] = useState<number>(0);
     const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>('');
 
     // Carregar dados do usuário
     useEffect(() => {
@@ -84,10 +88,8 @@ const Store: React.FC = () => {
 
     const handleProductClick = (product: Product) => {
         if (userPoints < product.price) {
-            setError('Pontos insuficientes para esta troca');
-            setTimeout(() => {
-                setError('');
-            },5000)
+            setToastMessage('Pontos insuficientes para esta troca');
+            setShowToast(true);
             return;
         }
         setSelectedProduct(product);
@@ -96,25 +98,23 @@ const Store: React.FC = () => {
 
     const handlePurchaseConfirmation = async () => {
         if (!selectedProduct) return;
-    
+
         const newPoints = userPoints - selectedProduct.price;
-    
+
         if (newPoints < 0) {
-            setError('Pontos insuficientes para esta troca');
+            setToastMessage('Pontos insuficientes para esta troca');
+            setShowToast(true);
             return;
         }
-    
+
         try {
             setLoading(true);
             console.log("Iniciando processo de resgate do produto:", selectedProduct.name);
             
-            // Usar redeemProduct ao invés de updateUserPoints
-            const updatedUserData = await redeemProduct(selectedProduct);
-            console.log("Produto resgatado com sucesso. Dados atualizados:", updatedUserData);
-            
-            // Verificar explicitamente se o produto foi adicionado
-            const productAdded = updatedUserData.redeemed?.some(p => p._id === selectedProduct._id);
-            console.log("Produto encontrado na lista de resgatados:", productAdded ? "Sim" : "Não");
+            // Use redeemProduct para adicionar o produto à lista de resgatados do usuário
+            // com status redeemed = false (pendente)
+            await redeemProduct(selectedProduct);
+            console.log("Produto resgatado com sucesso");
             
             // Atualizar interface
             setUserPoints(newPoints);
@@ -123,14 +123,19 @@ const Store: React.FC = () => {
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
-            setSuccessMessage(`${selectedProduct.name} resgatado com sucesso!`);
             
-            // Redirecionar para página de resgates após sucesso
-            console.log("Redirecionando para página de resgates...");
-
+            // Mostrar toast de sucesso
+            setToastMessage(`${selectedProduct.name} resgatado com sucesso!`);
+            setShowToast(true);
+            
+            // Usar history.push em vez de window.location para evitar recarregar a página
+            setTimeout(() => {
+                history.push('/redeem');
+            }, 1500);
         } catch (err: any) {
             console.error('Erro ao processar a troca:', err);
-            setError(`Erro ao processar a troca: ${err.message || 'Erro desconhecido'}`);
+            setToastMessage(`Erro ao processar a troca: ${err.message || 'Erro desconhecido'}`);
+            setShowToast(true);
         } finally {
             setLoading(false);
         }
@@ -155,7 +160,7 @@ const Store: React.FC = () => {
 
                 <div className="store-content">
                     <IonText className="title-text">
-                        <h2 className="products-title">Troque seus pontos por produtos</h2>
+                        <h2 className="products-title">Troque seus pontos</h2>
                     </IonText>
 
                     {error && (
@@ -176,7 +181,7 @@ const Store: React.FC = () => {
                                 className="products-swiper-store"
                             >
                                 {section.products.map((product) => (
-                                    <SwiperSlide key={product._id}>
+                                    <SwiperSlide key={product._id} className='swiper-slide-redeem-store'>
                                         <IonCard 
                                             className="product-card"
                                             onClick={() => handleProductClick(product)}
@@ -216,6 +221,16 @@ const Store: React.FC = () => {
                         },
                     ]}
                 />
+                
+                {/* Toast for success/error messages */}
+                <IonToast
+                    isOpen={showToast}
+                    onDidDismiss={() => setShowToast(false)}
+                    message={toastMessage}
+                    duration={2000}
+                    position="bottom"
+                    color={toastMessage.includes('sucesso') ? 'success' : 'danger'}
+                />
             </IonContent>
             <Toolbar />
         </IonPage>
@@ -223,4 +238,3 @@ const Store: React.FC = () => {
 };
 
 export default Store;
-

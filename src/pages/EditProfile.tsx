@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
@@ -47,13 +47,6 @@ const EditProfile: React.FC = () => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        localStorage.removeItem('user');
-        window.location.href = '/';
-    };
-
     //deletar usuario erro!!
     const deleteUser = async () => {
         const userId = localStorage.getItem("userId")
@@ -82,13 +75,20 @@ const EditProfile: React.FC = () => {
         }
       };
 
+      const windowChange = () => {      
+        window.location.href = '/profile';
+      };
+
     return (
         <IonPage>
-            <IonHeader className="ion-no-border">
-                <IonToolbar className='toolbar-profile'>
-                    <IonTitle className="profile-title">Meu cadastro</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <header className="header">
+                <div className="toolbar-profile">
+                    <div className="back-button" onClick={windowChange}>
+                    <span className="back-icon">&#8592;</span>
+                    </div>
+                    <h1 className="profile-title">Editar cadastro</h1>
+                </div>
+            </header>
 
             <IonContent className="profile-content">
 

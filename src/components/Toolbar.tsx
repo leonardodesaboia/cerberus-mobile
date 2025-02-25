@@ -30,14 +30,14 @@ const Toolbar: React.FC = () => {
         href="/redeem"
         className={currentPath === '/redeem' ? 'active-tab' : ''}
       >
-        <IonIcon icon="gift-outline" className="toolbar-icons" />
+        <IonIcon icon="gift-sharp" className="toolbar-icons" />
         <IonLabel>Meus produtos</IonLabel>
       </IonTabButton>
             
       <IonTabButton 
         tab="config" 
-        href="/config"
-        className={currentPath === '/config' ? 'active-tab' : ''}
+        href="/profile"
+        className={currentPath === '/profile' ? 'active-tab' : ''}
       >
         <IonIcon icon="person" className="toolbar-icons" />
         <IonLabel>Perfil</IonLabel>

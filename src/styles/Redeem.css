@@ -1,166 +1,133 @@
-.redeemed-content {
-    padding: 16px;
-  }
-  
-  .redeemed-title {
-    color: var(--ion-primary-color);
-    margin: 1.5rem 0 1rem 0;
-    font-size: 24px;
-    font-weight: 700;
-  }
-  
-  .redeemed-section {
-    margin-bottom: 24px;
-  }
-  
-  .redeemed-section h3 {
-    color: var(--ion-primary-color);
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-  
-  .products-swiper {
-    width: 100%;
-    height: auto;
-  }
-  
-  .product-card {
-    position: relative;
-    margin: 8px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .pending-card {
-    border-left: 4px solid var(--ion-secondary-color);
-  }
-  
-  .completed-card {
-    border-left: 4px solid var(--ion-tertiary-color);
-  }
-  
-  .product-status-indicator {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    display: flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    z-index: 10;
-  }
-  
-  .product-status-indicator ion-icon {
-    margin-right: 4px;
-    font-size: 14px;
-  }
-  
-  .product-status-indicator.pending {
-    background-color: rgba(255, 196, 0, 0.2);
-    color: #e6b800;
-  }
-  
-  .product-status-indicator.completed {
-    background-color: rgba(0, 200, 83, 0.2);
-    color: #00a359;
-  }
-  
-  .product-image {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-  }
-  
-  .product-name {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--ion-text-color);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .product-points {
-    font-size: 12px;
-    color: var(--ion-color-medium);
-  }
-  
-  .error-message {
-    background-color: rgba(var(--ion-color-danger-rgb), 0.1);
-    color: var(--ion-color-danger);
-    padding: 10px;
-    border-radius: 8px;
-    margin: 16px 0;
-    font-size: 14px;
-  }
-  
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-  }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(var(--ion-primary-color-rgb), 0.2);
-    border-radius: 50%;
-    border-top-color: var(--ion-primary-color);
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .empty-redeemed-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 32px 16px;
-    margin: 24px 0;
-    background-color: rgba(var(--ion-background-color-rgb), 0.8);
-    border-radius: 12px;
-  }
-  
-  .empty-icon {
-    font-size: 48px;
-    color: var(--ion-color-medium);
-    margin-bottom: 16px;
-  }
-  
-  .empty-redeemed-state h3 {
-    color: var(--ion-color-dark);
-    margin-bottom: 8px;
-    font-size: 20px;
-  }
-  
-  .empty-redeemed-state p {
-    color: var(--ion-color-medium);
-    margin-bottom: 24px;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  
-  /* Responsive adjustments */
-  @media (min-width: 768px) {
-    .redeemed-content {
-      max-width: 768px;
-      margin: 0 auto;
-    }
-    
-    .products-swiper {
-      --swiper-slides-per-view: 3.5;
-    }
-    
-    .product-image {
-      height: 140px;
-    }
-  }
+.redeemed-content{
+  margin-left: 1.5rem ;
+}
+
+.redeemed-title{
+  color: var(--ion-primary-color);
+  font-weight: 700;
+  font-size: 22px;
+  margin: 18px 0 24px 0;
+}
+
+.redeem-status{
+  color: var(--ion-primary-color);
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+.redeem-badge{
+  border-radius: 100%;
+  display: inline;
+  padding: 2px;
+}
+
+/* Estilos para o badge do código */
+.code-badge {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  color: #666;
+}
+
+.code-badge ion-icon {
+  margin-right: 4px;
+  font-size: 1rem;
+}
+
+/* Melhorias nos indicadores de status */
+.product-status-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.product-status-indicator ion-icon {
+  margin-right: 4px;
+  font-size: 1rem;
+}
+
+.product-status-indicator.pending {
+  background-color: rgba(255, 196, 9, 0.9);
+  color: #000;
+}
+
+.product-status-indicator.completed {
+  background-color: rgba(45, 211, 111, 0.9);
+  color: #fff;
+}
+
+/* Estilos para os cards */
+.product-card {
+  position: relative;
+  margin: 0;
+  height: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.pending-card {
+  border: 1.5px solid #ffc409;
+}
+
+.completed-card {
+  border: 1.5px solid #2dd36f;
+}
+
+.product-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.product-name {
+  font-size: 1rem;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-points {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Estilo para mensagem de erro */
+.error-message {
+  color: var(--ion-color-danger);
+  text-align: center;
+  padding: 20px;
+  margin: 10px;
+  background-color: rgba(var(--ion-color-danger-rgb), 0.1);
+  border-radius: 8px;
+}
+
+/* Estado vazio */
+.empty-redeemed-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+/* Ajustes para o Swiper */
+.products-swiper {
+  padding: 16px 0 32px 0;
+}
+
+.swiper-slide {
+  height: auto;
+}

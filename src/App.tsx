@@ -66,7 +66,7 @@ const App: React.FC = () => (
           <Route exact path="/store">
             <Store />
           </Route>
-          <Route path="/config">
+          <Route path="/profile">
             <Config />
           </Route>
           <Route exact path="/register">

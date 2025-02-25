@@ -37,7 +37,6 @@ interface Product {
 }
 
 interface RedeemedProduct extends Product {
-  redemptionDate?: string;
   redeemed: boolean;
 }
 
@@ -201,7 +200,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`  // Adicionando o prefixo Bearer
+        'Authorization': `${token}`
       }
     });
     
@@ -263,7 +262,6 @@ export const redeemProduct = async (product: Product): Promise<UserData> => {
       img: product.img,
       isActive: product.isActive,
       stock: product.stock || 0,
-      redemptionDate: new Date().toISOString(), // Mantemos a data para referência, mas não ordenamos por ela
       redeemed: false  // Pendente (false) por padrão
     };
     
@@ -281,5 +279,199 @@ export const redeemProduct = async (product: Product): Promise<UserData> => {
   } catch (error: any) {
     console.error("redeemProduct - Erro ao resgatar produto:", error);
     throw new Error(error.message || 'Erro ao resgatar produto');
+  }
+};
+
+export const updateRedemptionStatus = async (productId: string, isRedeemed: boolean): Promise<UserData> => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    
+    // Get current user data
+    const userData = await getUserData();
+    
+    // Find the redeemed product and update its status
+    if (Array.isArray(userData.redeemed)) {
+      const updatedRedeemed = userData.redeemed.map(product => {
+        if (product._id === productId) {
+          return { ...product, redeemed: isRedeemed };
+        }
+        return product;
+      });
+      
+      // Update user data with the modified redeemed products
+      const updatedUserData = await editUserData({ redeemed: updatedRedeemed });
+      return updatedUserData;
+    } else {
+      throw new Error('Lista de produtos resgatados não encontrada');
+    }
+  } catch (error: any) {
+    console.error("updateRedemptionStatus - Erro ao atualizar status do produto:", error);
+    throw new Error(error.message || 'Erro ao atualizar status do produto');
+  }
+};
+
+export const getUserRedemptionLogs = async (): Promise<any[]> => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    
+    // Usar o endpoint de listagem de logs existente
+    const response = await fetch(`${API_URL}/log/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+    });
+    
+    if (response.status === 400) {
+      // Se não houver logs, retornar array vazio
+      console.log("Nenhum log encontrado para o usuário");
+      return [];
+    }
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao obter logs');
+    }
+    
+    const logs = await response.json();
+    console.log("Logs obtidos:", logs);
+    
+    // Filtrar apenas logs que têm um produto (resgate)
+    const redemptionLogs = logs.filter((log: any) => log.product);
+    
+    console.log("Logs de resgate:", redemptionLogs);
+    
+    return redemptionLogs;
+  } catch (error: any) {
+    console.error("Erro ao buscar logs de resgate:", error);
+    throw new Error(error.message || 'Erro ao buscar logs de resgate');
+  }
+};
+
+// Funções corrigidas para manipular Logs com URLs corretas (adicionar ao arquivo api.ts)
+
+// Buscar logs de produtos pendentes (não resgatados)
+export const getUserPendingLogs = async (): Promise<any[]> => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    
+    // URL corrigida para logs não resgatados conforme as rotas
+    console.log("Buscando logs não resgatados do usuário:", userId);
+    const response = await fetch(`${API_URL}/log/not/redeemed/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+    });
+    
+    if (!response.ok) {
+      // Se não houver logs ou ocorrer erro, retornar array vazio
+      console.log("Nenhum log pendente encontrado");
+      return [];
+    }
+    
+    const logs = await response.json();
+    console.log("Logs pendentes obtidos:", logs);
+    return logs;
+  } catch (error: any) {
+    console.error("Erro ao buscar logs pendentes:", error);
+    return []; // Retornar array vazio em caso de erro
+  }
+};
+
+// Buscar logs de produtos já resgatados
+export const getUserRedeemedLogs = async (): Promise<any[]> => {
+  try {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error('ID do usuário não encontrado');
+    }
+    
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    
+    // URL para logs resgatados conforme as rotas
+    console.log("Buscando logs resgatados do usuário:", userId);
+    const response = await fetch(`${API_URL}/log/redeemed/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+    });
+    
+    if (!response.ok) {
+      // Se não houver logs ou ocorrer erro, retornar array vazio
+      console.log("Nenhum log resgatado encontrado");
+      return [];
+    }
+    
+    const logs = await response.json();
+    console.log("Logs resgatados obtidos:", logs);
+    return logs;
+  } catch (error: any) {
+    console.error("Erro ao buscar logs resgatados:", error);
+    return []; // Retornar array vazio em caso de erro
+  }
+};
+
+// Função para marcar um log como resgatado
+export const markLogAsRedeemed = async (logId: string): Promise<any> => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token não encontrado');
+    }
+    
+    console.log(`Marcando log ${logId} como resgatado`);
+    
+    // Usar o método PUT conforme definido nas rotas
+    const response = await fetch(`${API_URL}/log/${logId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      }
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao atualizar status');
+    }
+    
+    const result = await response.json();
+    console.log("Log marcado como resgatado:", result);
+    return result;
+  } catch (error: any) {
+    console.error("Erro ao marcar log como resgatado:", error);
+    throw new Error(error.message || 'Erro ao marcar como resgatado');
   }
 };

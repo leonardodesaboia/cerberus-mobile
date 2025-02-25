@@ -164,7 +164,7 @@ const Login: React.FC = () => {
                     </button>
 
                     <div className="create-account-login">
-                        <a href="/register">Crie sua conta aqui</a>
+                        <a href="/register">Crie sua conta aqui</a> botar "clicke aqui"
                     </div>
                 </form>
             </div>

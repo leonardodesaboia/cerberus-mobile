@@ -15,16 +15,6 @@ ion-content {
   z-index: -1;
 }
 
-/* Estilo para cabeçalho com fundo semitransparente */
-ion-header {
-  background: rgba(245, 249, 241, 0.95);
-  backdrop-filter: blur(10px);
-}
-
-IonToolbar {
-  --padding-top: 0 !important;
-}
-
 * {
   margin-top: -1px;
   padding: 0;
@@ -99,6 +89,10 @@ ion-tab-bar{
   font-weight: 800;
 }
 
+.custom-saldo{
+  margin-left: 2px;
+}
+
 .points-display {
   margin-left: 1.1rem;
   border-radius: 8px;
@@ -126,3 +120,25 @@ ion-header.header-collapse-condense ion-toolbar {
 ion-card {
   margin: 0;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--ion-primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

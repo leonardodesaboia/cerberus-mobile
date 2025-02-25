@@ -41,11 +41,13 @@ const Profile: React.FC = () => {
 
     return (
         <IonPage>
-            <IonHeader className="ion-no-border">
-                <IonToolbar className='toolbar-profile'>
-                    <IonTitle className="profile-title">Meu cadastro</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <header className="header">
+                <div className="toolbar-profile">
+                    <div className="back-button" >
+                    </div>
+                    <h1 className="profile-title">Meu cadastro</h1>
+                </div>
+            </header>
 
             <IonContent className="profile-content">
 
@@ -54,12 +56,12 @@ const Profile: React.FC = () => {
                 <div className="profile-form">
                     <div className="info-section">
                         <IonLabel className="section-label">Usuário</IonLabel>
-                        <h2 className='input-field' >{userName} <IonIcon icon="chevron-forward-outline" className='icon-profile' onClick={changeWindow} /></h2>
+                        <h2 className='input-field' >{userName} </h2>
                     </div>
 
                     <div className="info-section">
                         <IonLabel className="section-label">E-mail</IonLabel>
-                        <h2 className='input-field' >{currentEmail} <IonIcon icon="chevron-forward-outline" className='icon-profile' onClick={changeWindow} /></h2>
+                        <h2 className='input-field' >{currentEmail}</h2>
                     </div>
 
                     {/* bor=toes salvar,sair e deletar */}
@@ -67,7 +69,7 @@ const Profile: React.FC = () => {
                         <IonButton fill="clear" className="save-button" onClick={changeWindow}><IonIcon icon="create-outline" />Editar informações</IonButton>
                     </div>
                     <div className="logout">
-                    <IonButton fill="clear" className="logout-button" onClick={handleLogout}>Sair</IonButton>
+                    <IonButton className='logout-button' fill="clear" style={{ color: 'red' }} onClick={handleLogout}>Sair</IonButton>
                 </div>
                 </div>
             </IonContent>

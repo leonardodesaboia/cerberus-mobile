@@ -57,7 +57,7 @@ const Header: React.FC = () => {
         <IonHeader className="store-header" collapse="condense" >
             <IonToolbar>
                 <IonTitle size="large" className="custom-title">
-                    Bem vindo(a) {username}!
+                    Bem vindo(a) {username}
                 </IonTitle>
                 <div className="points-display">
                     <IonLabel className="custom-saldo">Seu saldo de pontos</IonLabel>
