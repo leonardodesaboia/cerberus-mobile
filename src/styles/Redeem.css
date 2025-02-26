@@ -6,19 +6,32 @@
   color: var(--ion-primary-color);
   font-weight: 700;
   font-size: 22px;
-  margin: 18px 0 24px 0;
+  margin: 18px 0 0 0;
 }
 
 .redeem-status{
   color: var(--ion-primary-color);
   font-weight: 600 !important;
   font-size: 16px !important;
+  margin-top: 24px !important;
 }
 
 .redeem-badge{
   border-radius: 100%;
   display: inline;
   padding: 2px;
+}
+
+.go-to-store {
+  --background: var(--ion-primary-color); /* Verde */
+  --background-hover: var(--ion-secondary-color); /* Verde mais escuro ao passar o mouse */
+  --color: white; /* Texto branco */
+}
+
+.retry-button {
+  --background: var(--ion-primary-color); /* Verde */
+  --background-hover: var(--ion-secondary-color); /* Verde mais escuro ao passar o mouse */
+  --color: white; /* Texto branco */
 }
 
 /* Estilos para o badge do código */
@@ -114,7 +127,8 @@
 /* Estado vazio */
 .empty-redeemed-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: 80px 20px;
+  margin-right: 20px;
 }
 
 .empty-icon {
@@ -123,11 +137,3 @@
   margin-bottom: 16px;
 }
 
-/* Ajustes para o Swiper */
-.products-swiper {
-  padding: 16px 0 32px 0;
-}
-
-.swiper-slide {
-  height: auto;
-}

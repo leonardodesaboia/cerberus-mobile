@@ -142,3 +142,8 @@ ion-card {
   100% { transform: rotate(360deg); }
 }
 
+.swiper-slide-redeem-store{
+  height: 12rem;
+  width: 9rem !important;
+  margin-top: 1rem ;
+}

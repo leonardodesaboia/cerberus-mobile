@@ -58,7 +58,7 @@ const EditProfile: React.FC = () => {
           const response = await fetch(`http://localhost:3000/user/${userId}`, { 
             method: "DELETE",
             headers: { 'Content-Type': 'application/json',
-              //'Authorization': `${localStorage.getItem("token")}`
+              'Authorization': `${localStorage.getItem("token")}`
             },
             
           });
@@ -84,7 +84,7 @@ const EditProfile: React.FC = () => {
             <header className="header">
                 <div className="toolbar-profile">
                     <div className="back-button" onClick={windowChange}>
-                    <span className="back-icon">&#8592;</span>
+                    <span className="back-icon" style={{ fontSize: '24px', color: 'white' }}>&#8592;</span>
                     </div>
                     <h1 className="profile-title">Editar cadastro</h1>
                 </div>

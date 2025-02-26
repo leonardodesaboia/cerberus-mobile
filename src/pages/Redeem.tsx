@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   IonPage, 
   IonContent, 
@@ -27,12 +27,21 @@ import '../styles/Redeem.css';
 import Header from '../components/Header';
 import Toolbar from '../components/Toolbar';
 import { getUserPendingLogs, getUserRedeemedLogs, markLogAsRedeemed, fetchProducts } from '../services/api';
+import PointsUpdateEvent from '../utils/pointsUpdateEvent';
 
+// Component interfaces...
 interface Log {
   _id: string;
   user: string;
   points: number;
-  product: string;  // ID do produto
+  product: {
+    _id: string;
+    name: string;
+    price: number;
+    img: string;
+    isActive: boolean;
+    stock?: number;
+  };  
   code?: string;
   redeemed?: boolean;
   activityDate?: string;
@@ -44,33 +53,86 @@ interface Product {
   price: number;
   img: string;
   isActive: boolean;
-}
-
-// Interface para o log enriquecido com detalhes do produto
-interface EnrichedLog extends Log {
-  productDetails?: Product;
+  stock?: number;
 }
 
 const Redeem: React.FC = () => {
   // Estado para os logs pendentes e concluídos
-  const [pendingLogs, setPendingLogs] = useState<EnrichedLog[]>([]);
-  const [redeemedLogs, setRedeemedLogs] = useState<EnrichedLog[]>([]);
+  const [pendingLogs, setPendingLogs] = useState<Log[]>([]);
+  const [redeemedLogs, setRedeemedLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedLog, setSelectedLog] = useState<EnrichedLog | null>(null);
+  const [selectedLog, setSelectedLog] = useState<Log | null>(null);
   const [showDetailsAlert, setShowDetailsAlert] = useState<boolean>(false);
   const [showConfirmAlert, setShowConfirmAlert] = useState<boolean>(false);
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [productsMap, setProductsMap] = useState<{[key: string]: Product}>({});
 
-  // Buscar produtos para mapear com os logs
+  // Create a memoized fetchData function to avoid unnecessary re-creations
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // First fetch products to have the details available
+      console.log("Buscando produtos...");
+      const products = await fetchProductsData();
+      
+      // Fetch pending logs
+      console.log("Buscando logs pendentes...");
+      const pending = await getUserPendingLogs();
+      console.log("Logs pendentes brutos:", pending);
+      
+      // Fetch redeemed logs
+      console.log("Buscando logs resgatados...");
+      const redeemed = await getUserRedeemedLogs();
+      console.log("Logs resgatados brutos:", redeemed);
+      
+      // Enrich logs with product details if needed
+      const enrichedPending = enrichLogs(pending, products);
+      const enrichedRedeemed = enrichLogs(redeemed, products);
+      
+      setPendingLogs(enrichedPending);
+      setRedeemedLogs(enrichedRedeemed);
+    } catch (err: any) {
+      console.error("Erro ao carregar dados:", err);
+      setError(`Não foi possível carregar os produtos resgatados: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Helper function to enrich logs with product details
+  const enrichLogs = (logs: any[], products: {[key: string]: Product}) => {
+    return logs.map(log => {
+      // If the log already has populated product details, use them
+      if (typeof log.product === 'object' && log.product !== null) {
+        return log;
+      }
+      
+      // Otherwise, enrich with data from the products map
+      const productId = typeof log.product === 'string' ? log.product : '';
+      return {
+        ...log,
+        product: products[productId] || { 
+          _id: productId,
+          name: 'Produto Indisponível',
+          price: Math.abs(log.points),
+          img: '',
+          isActive: false
+        }
+      };
+    });
+  };
+
+  // Fetch products data
   const fetchProductsData = async () => {
     try {
       const productsData = await fetchProducts();
       console.log("Produtos obtidos:", productsData);
       
-      // Criar um mapa de produtos por ID para facilitar o acesso
+      // Create a map of products by ID for easy access
       const productsMap: {[key: string]: Product} = {};
       productsData.forEach((product: Product) => {
         productsMap[product._id] = product;
@@ -85,57 +147,20 @@ const Redeem: React.FC = () => {
     }
   };
 
-  // Enriquecer logs com detalhes dos produtos
-  const enrichLogs = (logs: Log[], productsMap: {[key: string]: Product}): EnrichedLog[] => {
-    return logs.map(log => ({
-      ...log,
-      productDetails: productsMap[log.product]
-    }));
-  };
-
-  // Buscar logs de resgate e enriquecê-los com detalhes dos produtos
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Primeiro buscar os produtos para ter os detalhes disponíveis
-      console.log("Buscando produtos...");
-      const products = await fetchProductsData();
-      
-      // Buscar logs pendentes (não resgatados)
-      console.log("Buscando logs pendentes...");
-      const pending = await getUserPendingLogs();
-      console.log("Logs pendentes brutos:", pending);
-      
-      // Buscar logs já resgatados
-      console.log("Buscando logs resgatados...");
-      const redeemed = await getUserRedeemedLogs();
-      console.log("Logs resgatados brutos:", redeemed);
-      
-      // Enriquecer logs com detalhes dos produtos
-      const enrichedPending = enrichLogs(pending, products);
-      const enrichedRedeemed = enrichLogs(redeemed, products);
-      
-      console.log("Logs pendentes enriquecidos:", enrichedPending);
-      console.log("Logs resgatados enriquecidos:", enrichedRedeemed);
-      
-      setPendingLogs(enrichedPending);
-      setRedeemedLogs(enrichedRedeemed);
-    } catch (err: any) {
-      console.error("Erro ao carregar dados:", err);
-      setError(`Não foi possível carregar os produtos resgatados: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Carregar dados quando o componente montar
+  // Load data when component mounts and subscribe to PointsUpdateEvent
   useEffect(() => {
     console.log("Redeem - Componente montado");
     fetchData();
     
-    // Recarregar quando a página ficar visível novamente
+    // Subscribe to PointsUpdateEvent to refresh data when points are updated
+    const handlePointsUpdate = () => {
+      console.log("Redeem - Atualizando dados após alteração de pontos");
+      fetchData();
+    };
+    
+    PointsUpdateEvent.subscribe(handlePointsUpdate);
+    
+    // Refresh data when page becomes visible again
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log("Redeem - Página focada novamente");
@@ -143,27 +168,32 @@ const Redeem: React.FC = () => {
       }
     };
     
+    // Listen for route changes using Ionic lifecycle events
+    document.addEventListener('ionViewWillEnter', fetchData);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
+    // Cleanup subscriptions
     return () => {
+      PointsUpdateEvent.unsubscribe(handlePointsUpdate);
+      document.removeEventListener('ionViewWillEnter', fetchData);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [fetchData]);
 
-  // Lidar com o pull-to-refresh
+  // Handle pull-to-refresh
   const handleRefresh = (event: CustomEvent) => {
     fetchData().then(() => {
       event.detail.complete();
     });
   };
 
-  // Exibir detalhes do log quando clicar no card
-  const handleLogClick = (log: EnrichedLog) => {
+  // Show log details when clicking on the card
+  const handleLogClick = (log: Log) => {
     setSelectedLog(log);
     setShowDetailsAlert(true);
   };
 
-  // Mostrar confirmação para marcar como concluído
+  // Show confirmation to mark as completed
   const handleMarkAsComplete = () => {
     if (selectedLog) {
       setShowDetailsAlert(false);
@@ -171,21 +201,21 @@ const Redeem: React.FC = () => {
     }
   };
 
-  // Marcar log como resgatado
+  // Mark log as redeemed
   const confirmCompletion = async () => {
     if (!selectedLog) return;
     
     try {
       setLoading(true);
       
-      // Chamar API para marcar como resgatado
+      // Call API to mark as redeemed
       await markLogAsRedeemed(selectedLog._id);
       
-      // Atualizar interface localmente
+      // Update interface locally
       const updatedPending = pendingLogs.filter(log => log._id !== selectedLog._id);
       setPendingLogs(updatedPending);
       
-      // Adicionar aos resgatados
+      // Add to redeemed logs
       const updatedLog = { ...selectedLog, redeemed: true };
       setRedeemedLogs([...redeemedLogs, updatedLog]);
       
@@ -200,15 +230,15 @@ const Redeem: React.FC = () => {
     }
   };
 
-  // Formatar data para exibição
+  // Format date for display
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Data não disponível";
     
-    // Tentar converter string para Date
+    // Try to convert string to Date
     const date = new Date(dateString);
     
     if (isNaN(date.getTime())) {
-      // Se não é uma data válida, mostrar a string como está
+      // If not a valid date, show string as is
       return dateString;
     }
     
@@ -221,13 +251,13 @@ const Redeem: React.FC = () => {
     });
   };
 
-  // Renderizar estado vazio quando não há produtos resgatados
+  // Render empty state when there are no redeemed products
   const renderEmptyState = () => (
     <div className="empty-redeemed-state">
       <IonIcon icon={timeOutline} className="empty-icon" />
       <h3>Nenhum produto resgatado</h3>
       <p>Você ainda não resgatou nenhum produto. Visite a loja para trocar seus pontos por produtos incríveis!</p>
-      <IonButton routerLink="/store" expand="block">
+      <IonButton routerLink="/store" expand="block" className='go-to-store'>
         Ir para a loja
       </IonButton>
     </div>
@@ -240,7 +270,6 @@ const Redeem: React.FC = () => {
           <IonRefresherContent></IonRefresherContent>
         </IonRefresher>
         
-        
         <Header />
         
         <div className="redeemed-content">
@@ -251,7 +280,7 @@ const Redeem: React.FC = () => {
           {error && (
             <div className="error-message">
               {error}
-              <IonButton expand="block" onClick={() => fetchData()}>
+              <IonButton className='retry-button' expand="block" onClick={() => fetchData()}>
                 Tentar novamente
               </IonButton>
             </div>
@@ -265,12 +294,11 @@ const Redeem: React.FC = () => {
             renderEmptyState()
           ) : (
             <>
-              {/* Seção de logs pendentes */}
+              {/* Pending logs section */}
               {pendingLogs.length > 0 && (
                 <div className="redeemed-section">
                   <IonLabel>
                     <h3 className='redeem-status'>Produtos pendentes: <p color="warning" className='redeem-badge' style={{ backgroundColor: 'var(--ion-color-warning)' }}>{pendingLogs.length}</p></h3>
-                    
                   </IonLabel>
                   <Swiper
                     modules={[Pagination]}
@@ -288,12 +316,14 @@ const Redeem: React.FC = () => {
                             <IonIcon icon={timeOutline} />
                             <span>Pendente</span>
                           </div>
-                          {log.productDetails ? (
+                          {log.product ? (
                             <>
-                              <img src={log.productDetails.img} alt={log.productDetails.name} className="product-image" />
+                              {log.product.img && (
+                                <img src={log.product.img} alt={log.product.name} className="product-image" />
+                              )}
                               <IonCardHeader>
-                                <IonCardTitle className="product-name">{log.productDetails.name}</IonCardTitle>
-                                {log.code && (
+                                <IonCardTitle className="product-name">{log.product.name}</IonCardTitle>
+                                 {log.code && (
                                   <div className="code-badge">
                                     <IonIcon icon={receiptOutline} />
                                     <span>Código: {log.code}</span>
@@ -304,9 +334,6 @@ const Redeem: React.FC = () => {
                           ) : (
                             <IonCardHeader>
                               <IonCardTitle className="product-name">Produto Indisponível</IonCardTitle>
-                              <IonCardSubtitle className="product-points">
-                                {Math.abs(log.points)} pontos • {formatDate(log.activityDate)}
-                              </IonCardSubtitle>
                               {log.code && (
                                 <div className="code-badge">
                                   <IonIcon icon={receiptOutline} />
@@ -322,7 +349,7 @@ const Redeem: React.FC = () => {
                 </div>
               )}
 
-              {/* Seção de logs já resgatados */}
+              {/* Redeemed logs section */}
               {redeemedLogs.length > 0 && (
                 <div className="redeemed-section">
                   <IonLabel>
@@ -344,12 +371,13 @@ const Redeem: React.FC = () => {
                             <IonIcon icon={checkmarkCircle} />
                             <span>Resgatado</span>
                           </div>
-                          {log.productDetails ? (
+                          {log.product ? (
                             <>
-                              <img src={log.productDetails.img} alt={log.productDetails.name} className="product-image" />
+                              {log.product.img && (
+                                <img src={log.product.img} alt={log.product.name} className="product-image" />
+                              )}
                               <IonCardHeader>
-                                <IonCardTitle className="product-name">{log.productDetails.name}</IonCardTitle>
-
+                                <IonCardTitle className="product-name">{log.product.name}</IonCardTitle>
                                 {log.code && (
                                   <div className="code-badge">
                                     <IonIcon icon={receiptOutline} />
@@ -361,9 +389,6 @@ const Redeem: React.FC = () => {
                           ) : (
                             <IonCardHeader>
                               <IonCardTitle className="product-name">Produto Indisponível</IonCardTitle>
-                              <IonCardSubtitle className="product-points">
-                                {Math.abs(log.points)} pontos • {formatDate(log.activityDate)}
-                              </IonCardSubtitle>
                               {log.code && (
                                 <div className="code-badge">
                                   <IonIcon icon={receiptOutline} />
@@ -382,14 +407,14 @@ const Redeem: React.FC = () => {
           )}
         </div>
 
-        {/* Alert de detalhes do log */}
+        {/* Log details alert */}
         <IonAlert
           isOpen={showDetailsAlert}
           onDidDismiss={() => setShowDetailsAlert(false)}
           header="Detalhes do Resgate"
           message={
             selectedLog
-              ? `${selectedLog.productDetails?.name || 'Produto'}\n\n` +
+              ? `${selectedLog.product ? selectedLog.product.name : 'Produto'}\n\n` +
                 `Pontos: ${Math.abs(selectedLog.points)}\n` +
                 `Data: ${formatDate(selectedLog.activityDate)}\n` +
                 `${selectedLog.code ? `Código: ${selectedLog.code}\n` : ''}` +
@@ -401,7 +426,7 @@ const Redeem: React.FC = () => {
               text: 'Fechar',
               role: 'cancel'
             },
-            // Botão para marcar como concluído (apenas para logs pendentes)
+            // Button to mark as completed (only for pending logs)
             ...(selectedLog && !selectedLog.redeemed 
               ? [{ 
                   text: 'Marcar como Concluído', 
@@ -411,12 +436,12 @@ const Redeem: React.FC = () => {
           ]}
         />
 
-        {/* Alert de confirmação para marcar como concluído */}
+        {/* Confirmation alert to mark as completed */}
         <IonAlert
           isOpen={showConfirmAlert}
           onDidDismiss={() => setShowConfirmAlert(false)}
           header="Confirmar Conclusão"
-          message={`Deseja marcar este resgate como concluído?\n\n${selectedLog?.productDetails?.name || 'Produto'}`}
+          message={`Deseja marcar este resgate como concluído?\n\n${selectedLog?.product?.name || 'Produto'}`}
           buttons={[
             {
               text: 'Cancelar',
@@ -429,7 +454,7 @@ const Redeem: React.FC = () => {
           ]}
         />
 
-        {/* Toast para mensagens de sucesso/erro */}
+        {/* Toast for success/error messages */}
         <IonToast
           isOpen={showToast}
           onDidDismiss={() => setShowToast(false)}

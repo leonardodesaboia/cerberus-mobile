@@ -88,6 +88,7 @@ export const loginUser = async (userData: LoginData): Promise<{ token: string }>
 export const getUserData = async (): Promise<UserData> => {
   try {
     const userId = localStorage.getItem("userId");
+    
     if (!userId) {
       throw new Error('ID do usuário não encontrado');
     }
@@ -101,7 +102,7 @@ export const getUserData = async (): Promise<UserData> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': `${token}`
       },
     }); 
     const data = await response.json();
@@ -133,7 +134,7 @@ export const editUserData = async (updatedData: Partial<UserData>): Promise<User
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': `${token}`
       },
       body: JSON.stringify(updatedData),
     });
@@ -173,7 +174,7 @@ export const updateUserPoints = async (product: Product): Promise<void> => {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': token
+        'Authorization': `${token}`
       },
       body: JSON.stringify(requestData),
     });
@@ -246,36 +247,40 @@ export const redeemProduct = async (product: Product): Promise<UserData> => {
       throw new Error('Token não encontrado');
     }
     
-    // Primeiro, atualizar os pontos do usuário (subtrair pontos)
-    await updateUserPoints(product);
-    console.log("redeemProduct - Pontos atualizados com sucesso");
-    
-    // Depois, obter os dados atuais do usuário
-    const userData = await getUserData();
-    console.log("redeemProduct - Dados do usuário obtidos:", userData.username);
-    
-    // Criar o objeto do produto resgatado com status
-    const redeemedProduct: RedeemedProduct = {
-      _id: product._id,
-      name: product.name,
-      price: product.price,
-      img: product.img,
-      isActive: product.isActive,
-      stock: product.stock || 0,
-      redeemed: false  // Pendente (false) por padrão
+    // This is the key change: We only use the /log endpoint which already handles:
+    // 1. Updating user points
+    // 2. Reducing product stock
+    // 3. Generating a redemption code
+    // 4. Creating the redemption record with redeemed=false
+    const requestData: UpdatePointsRequest = {
+      user: userId,
+      product: product._id,
+      points: (product.price * -1)
     };
     
-    // Adicionar o produto à lista de resgatados (criar array se não existir)
-    const redeemed = Array.isArray(userData.redeemed) ? [...userData.redeemed] : [];
-    redeemed.push(redeemedProduct);
-    console.log("redeemProduct - Produto adicionado à lista de resgatados:", redeemedProduct);
+    console.log("redeemProduct - Enviando solicitação para API:", requestData);
     
-    // Atualizar os dados do usuário com o novo produto resgatado
-    const updatedUserData = await editUserData({ redeemed });
-    console.log("redeemProduct - Dados do usuário atualizados com sucesso:", 
-      updatedUserData.redeemed?.length || 0, "produtos resgatados");
+    const response = await fetch(`${API_URL}/log`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `${token}`
+      },
+      body: JSON.stringify(requestData),
+    });
     
-    return updatedUserData;
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao atualizar pontos');
+    }
+    
+    console.log("redeemProduct - Log criado com sucesso");
+    
+    // Get updated user data after the operation
+    const userData = await getUserData();
+    console.log("redeemProduct - Dados do usuário atualizados");
+    
+    return userData;
   } catch (error: any) {
     console.error("redeemProduct - Erro ao resgatar produto:", error);
     throw new Error(error.message || 'Erro ao resgatar produto');

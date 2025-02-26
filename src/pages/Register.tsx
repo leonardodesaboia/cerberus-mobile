@@ -264,6 +264,7 @@ const Register: React.FC = () => {
                                 
                 const arrayToken = loginResponse.token.split('.');
                 const tokenPayload = JSON.parse(atob(arrayToken[1]));
+                localStorage.setItem('token', loginResponse.token);
                 localStorage.setItem('userId', tokenPayload.id);
                 const user = await getUserData();
                 localStorage.setItem('user', JSON.stringify(user));

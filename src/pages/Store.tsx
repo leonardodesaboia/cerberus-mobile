@@ -98,60 +98,53 @@ const Store: React.FC = () => {
 
     const handlePurchaseConfirmation = async () => {
         if (!selectedProduct) return;
-
+    
         const newPoints = userPoints - selectedProduct.price;
-
+    
         if (newPoints < 0) {
             setToastMessage('Pontos insuficientes para esta troca');
             setShowToast(true);
             return;
         }
-
+    
         try {
             setLoading(true);
             console.log("Iniciando processo de resgate do produto:", selectedProduct.name);
             
-            // Use redeemProduct para adicionar o produto à lista de resgatados do usuário
-            // com status redeemed = false (pendente)
+            // Use the simplified redeemProduct function
             await redeemProduct(selectedProduct);
             console.log("Produto resgatado com sucesso");
             
-            // Atualizar interface
+            // Update UI
             setUserPoints(newPoints);
+            
+            // IMPORTANT: Emit the points update event to notify other components
             PointsUpdateEvent.emit();
             
             setShowAlert(false);
             setSelectedProduct(null);
             setError(null);
             
-            // Mostrar toast de sucesso
+            // Show success toast
             setToastMessage(`${selectedProduct.name} resgatado com sucesso!`);
             setShowToast(true);
             
-            // Usar history.push em vez de window.location para evitar recarregar a página
+            // Navigate to redeem page after brief delay
             setTimeout(() => {
                 history.push('/redeem');
             }, 1500);
         } catch (err: any) {
             console.error('Erro ao processar a troca:', err);
-            setToastMessage(`Erro ao processar a troca: ${err.message || 'Erro desconhecido'}`);
+            
+            // Show specific error message from API or fallback to generic message
+            const errorMessage = err.message || 'Erro desconhecido';
+            setToastMessage(`Erro ao processar a troca: ${errorMessage}`);
             setShowToast(true);
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
     };
-
-    if (loading) {
-        return (
-            <IonPage>
-                <IonContent>
-                    <div className="loader">
-                        <div className="spinner"></div>
-                    </div>
-                </IonContent>
-            </IonPage>
-        );
-    }
 
     return (
         <IonPage>
