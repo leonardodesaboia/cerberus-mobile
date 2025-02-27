@@ -460,7 +460,7 @@ const Redeem: React.FC = () => {
           onDidDismiss={() => setShowToast(false)}
           message={toastMessage}
           duration={2000}
-          position="bottom"
+          position="top"
           color="success"
         />
       </IonContent>

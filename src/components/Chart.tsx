@@ -14,8 +14,8 @@ interface ChartData {
 }
 
 interface UserData {
-    plasticDiscarted: number;
-    metalDiscarted: number;
+    plasticDiscarded: number;
+    metalDiscarded: number;
 }
 
 const COLORS: ColorMap = { 
@@ -53,18 +53,18 @@ const TrashChart: React.FC = () => {
             try {
                 setLoading(true);
                 const userData: UserData = await getUserData();
-                const totalAmount: number = userData.plasticDiscarted + userData.metalDiscarted;
+                const totalAmount: number = userData.plasticDiscarded + userData.metalDiscarded;
                 
                 const filterData: ChartData[] = [
                     { 
                         name: "Plástico", 
-                        amount: userData.plasticDiscarted || 0,
-                        percentage: totalAmount > 0 ? (userData.plasticDiscarted / totalAmount) * 100 : 0
+                        amount: userData.plasticDiscarded || 0,
+                        percentage: totalAmount > 0 ? (userData.plasticDiscarded / totalAmount) * 100 : 0
                     },
                     { 
                         name: "Metal", 
-                        amount: userData.metalDiscarted || 0,
-                        percentage: totalAmount > 0 ? (userData.metalDiscarted / totalAmount) * 100 : 0
+                        amount: userData.metalDiscarded || 0,
+                        percentage: totalAmount > 0 ? (userData.metalDiscarded / totalAmount) * 100 : 0
                     }
                 ];
                 

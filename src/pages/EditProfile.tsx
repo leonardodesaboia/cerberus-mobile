@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon, IonToast } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
@@ -11,6 +11,9 @@ const EditProfile: React.FC = () => {
     const [newEmail, setNewEmail] = useState('');
     const [originalEmail, setOriginalEmail] = useState('');
     const [userId, setUserId] = useState('');
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [toastMessage, setToastMessage] = useState<string>('');
+
 
     //carregar dados do usuario
     useEffect(() => {
@@ -42,6 +45,8 @@ const EditProfile: React.FC = () => {
             setCurrentEmail(updatedUser.email);
             setOriginalEmail(updatedUser.email);
             setNewEmail('');
+            setToastMessage(`Usuário editado com sucesso!`);
+            setShowToast(true);
         } catch (error) {
             console.error('Erro ao salvar alterações:', error);
         }
@@ -121,6 +126,15 @@ const EditProfile: React.FC = () => {
                     <IonButton fill="clear" className="delete-button" color="danger" onClick={deleteUser}>Deletar conta</IonButton>
                 </div>
                 </div>
+
+                <IonToast
+                    isOpen={showToast}
+                    onDidDismiss={() => setShowToast(false)}
+                    message={toastMessage}
+                    duration={2000}
+                    position="top"
+                    color={toastMessage.includes('sucesso') ? 'success' : 'danger'}
+                />
             </IonContent>
             <Toolbar />
         </IonPage>

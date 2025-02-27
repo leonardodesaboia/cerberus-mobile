@@ -9,8 +9,8 @@ import 'swiper/css/autoplay';
 import '../styles/Home.css';
 
 interface UserData {
-  plasticDiscarted: number;
-  metalDiscarted: number;
+  plasticDiscarded: number;
+  metalDiscarded: number;
 }
 
 interface Achievement {
@@ -50,8 +50,8 @@ const SwiperComponent: React.FC<SwiperComponentProps> = ({ showUnlocked }) => {
       try {
         const userData: UserData = await getUserData();
         setUserRecycling({
-          plastic: userData.plasticDiscarted || 0,
-          metal: userData.metalDiscarted || 0
+          plastic: userData.plasticDiscarded || 0,
+          metal: userData.metalDiscarded || 0
         });
       } catch (error) {
         setError('Erro ao carregar dados de reciclagem');

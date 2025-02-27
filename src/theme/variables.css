@@ -132,7 +132,7 @@ ion-card {
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid var(--ion-primary-color);
+  border-top: 5px solid var(--ion-primary-color) !important;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

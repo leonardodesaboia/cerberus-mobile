@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert, IonCardHeader, IonCardSubtitle, IonCardTitle, IonToast } from '@ionic/react';
+import { IonPage, IonContent, IonCard, IonText, IonLabel, IonImg, IonAlert, IonCardHeader, IonCardSubtitle, IonCardTitle, IonToast, IonIcon } from '@ionic/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { useState, useEffect } from 'react';
@@ -10,6 +10,7 @@ import Header from '../components/Header';
 import { updateUserPoints, fetchProducts, getUserData, redeemProduct } from '../services/api';
 import PointsUpdateEvent from '../utils/pointsUpdateEvent';
 import { useHistory } from 'react-router-dom'; // Import useHistory for redirection
+import { timeOutline } from 'ionicons/icons';
 
 interface Product {
     _id: string;
@@ -61,16 +62,20 @@ const Store: React.FC = () => {
 
                 const sections: Section[] = [
                     {
-                        title: 'Até 2000 pontos',
-                        products: activeProducts.filter((p: Product) => p.price <= 2000)
+                        title: 'Até 5000 pontos',
+                        products: activeProducts.filter((p: Product) => p.price <= 5000)
                     },
                     {
-                        title: 'Até 40 pontos',
-                        products: activeProducts.filter((p: Product) => p.price > 20 && p.price <= 40)
+                        title: 'De 5000 até 10000 pontos',
+                        products: activeProducts.filter((p: Product) => p.price > 5000 && p.price <= 10000)
+                    },
+                    {
+                        title: 'De 10000 até 20000 pontos',
+                        products: activeProducts.filter((p: Product) => p.price > 10000 && p.price <= 20000)
                     },
                     {
                         title: 'Acima de 2000 pontos',
-                        products: activeProducts.filter((p: Product) => p.price > 2000)
+                        products: activeProducts.filter((p: Product) => p.price > 20000)
                     }
                 ];
 
@@ -95,6 +100,13 @@ const Store: React.FC = () => {
         setSelectedProduct(product);
         setShowAlert(true);
     };
+
+      const renderEmptyState = () => (
+        <div className="empty-statement-state">
+          <IonIcon icon={timeOutline} className="empty-icon" />
+          <h3>Nenhum produto encontrado</h3>
+        </div>
+      );
 
     const handlePurchaseConfirmation = async () => {
         if (!selectedProduct) return;
@@ -158,11 +170,19 @@ const Store: React.FC = () => {
 
                     {error && (
                         <div className="error-message">
-                            {error}
+                        {error}
+                        <p style={{ color: 'red' , fontSize: '32px', fontWeight: 'bold'}}>Ocorreu um erro: ${error}</p>
                         </div>
                     )}
 
-                    {productSections.map((section, index) => (
+                    {loading ? (
+                                <div className="loader">
+                                <div className="spinner"></div>
+                                </div>
+                            ) : productSections.length === 0 ? (
+                                renderEmptyState()
+                            ) : (
+                    productSections.map((section, index) => (
                         <div className="points-section" key={index}>
                             <IonLabel>
                                 <h3>{section.title}</h3>
@@ -189,8 +209,17 @@ const Store: React.FC = () => {
                                 ))}
                             </Swiper>
                         </div>
-                    ))}
+                    )))}
                 </div>
+
+                <IonToast
+                    isOpen={showToast}
+                    onDidDismiss={() => setShowToast(false)}
+                    message={toastMessage}
+                    duration={2000}
+                    position="top"
+                    color={toastMessage.includes('sucesso') ? 'success' : 'danger'}
+                />
 
                 <IonAlert
                     isOpen={showAlert}
@@ -215,15 +244,6 @@ const Store: React.FC = () => {
                     ]}
                 />
                 
-                {/* Toast for success/error messages */}
-                <IonToast
-                    isOpen={showToast}
-                    onDidDismiss={() => setShowToast(false)}
-                    message={toastMessage}
-                    duration={2000}
-                    position="bottom"
-                    color={toastMessage.includes('sucesso') ? 'success' : 'danger'}
-                />
             </IonContent>
             <Toolbar />
         </IonPage>

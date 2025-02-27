@@ -1,13 +1,20 @@
 
   .statement-content {
-      margin: 16px;
-    }
+    margin: 1.5rem;
+  }
     
   .statement-title {
     font-size: 24px;
     font-weight: 600;
-    margin-bottom: 16px;
     color: var(--ion-primary-color);
+    margin-left: -2px;
+
+  }
+
+  ion-list{
+    border-radius: 10px !important;
+    background-color: var(--ion-background-color) !important;
+    
   }
   
   .points-summary-card {
@@ -17,9 +24,7 @@
   .transactions-header {
     font-size: 18px;
     font-weight: 600;
-    margin: 16px 0;
     color: var(--ion-primary-color);
-    margin-bottom: 1rem;
   }
   
   .transaction-card {

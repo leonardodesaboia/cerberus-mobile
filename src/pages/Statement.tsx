@@ -39,8 +39,8 @@ interface Log {
     img: string;
     isActive: boolean;
   };
-  plasticDiscarted?: number;
-  metalDiscarted?: number;
+  plasticDiscarded?: number;
+  metalDiscarded?: number;
   code?: string;
   redeemed?: boolean;
   activityDate: string;
@@ -55,7 +55,7 @@ interface Product {
   stock?: number;
 }
 
-const Extrato: React.FC = () => {
+const Statement: React.FC = () => {
   const [allLogs, setAllLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +63,34 @@ const Extrato: React.FC = () => {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [productsMap, setProductsMap] = useState<{[key: string]: Product}>({});
+  
+  // Helper function to parse a date string based on format
+  const parseFlexibleDate = (dateString: string): Date => {
+    // If dateString contains '/', assume it's in DD/MM/YYYY format (Brazilian)
+    if (dateString.includes('/')) {
+      const parts = dateString.split(', ');
+      const datePart = parts[0].split('/');
+      
+      const day = parseInt(datePart[0]);
+      const month = parseInt(datePart[1]) - 1;  // JS months are 0-based
+      const year = parseInt(datePart[2]);
+      
+      // If there's a time part
+      if (parts.length > 1) {
+        const timePart = parts[1].split(':');
+        const hour = parseInt(timePart[0]);
+        const minute = parseInt(timePart[1]);
+        const second = timePart.length > 2 ? parseInt(timePart[2]) : 0;
+        
+        return new Date(year, month, day, hour, minute, second);
+      } else {
+        return new Date(year, month, day);
+      }
+    } 
+    
+    // Default to standard ISO format
+    return new Date(dateString);
+  };
   
   // Fetch products data to match product IDs with names
   const fetchProductsData = async () => {
@@ -152,10 +180,40 @@ const Extrato: React.FC = () => {
         return log;
       });
       
-      // Sort logs by date (newest first)
-      const sortedLogs = enrichedLogs.sort((a: Log, b: Log) => {
-        return new Date(b.activityDate).getTime() - new Date(a.activityDate).getTime();
+      // Log raw dates for debugging
+      console.log("Raw dates before sorting:", enrichedLogs.map((log: { _id: any; activityDate: any; }) => ({
+        id: log._id,
+        date: log.activityDate
+      })));
+      
+      // Parse and sort by exact day and time (newest first)
+      const sortedLogs = [...enrichedLogs].sort((a, b) => {
+        try {
+          // Parse dates with the helper function
+          const dateA = parseFlexibleDate(a.activityDate);
+          const dateB = parseFlexibleDate(b.activityDate);
+          
+          // Check if dates are valid
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+            throw new Error('Invalid date parsing');
+          }
+          
+          // Sort by timestamp (newest first)
+          return dateB.getTime() - dateA.getTime();
+        } catch (error) {
+          console.warn('Error parsing dates, falling back to string comparison:', error);
+          
+          // Fallback to basic string comparison
+          return b.activityDate.localeCompare(a.activityDate);
+        }
       });
+      
+      // Log sorted dates for verification
+      console.log("Dates after sorting:", sortedLogs.map(log => ({
+        id: log._id,
+        date: log.activityDate,
+        parsedDate: parseFlexibleDate(log.activityDate).toISOString()
+      })));
       
       setAllLogs(sortedLogs);
     } catch (err: any) {
@@ -165,6 +223,32 @@ const Extrato: React.FC = () => {
       setLoading(false);
     }
   }, []);
+  
+  // Get description for a transaction
+  const getTransactionDescription = (log: Log) => {
+    if (log.product) {
+      // If product is an object with name property
+      if (typeof log.product === 'object' && log.product !== null && log.product.name) {
+        return `Resgate: ${log.product.name}`;
+      }
+      
+      // If product is a string (ID), try to get product name from map
+      if (typeof log.product === 'string' && productsMap[log.product]) {
+        return `Resgate: ${productsMap[log.product].name}`;
+      }
+      
+      // Fallback if we can't find the product name
+      return "Resgate de produto";
+    } else if (log.plasticDiscarded && log.plasticDiscarded > 0) {
+      return `Descarte de ${log.plasticDiscarded} plásticos`;
+    } else if (log.metalDiscarded && log.metalDiscarded > 0) {
+      return `Descarte de ${log.metalDiscarded} metais`;
+    } else if (log.points > 0) {
+      return "Entrada de pontos";
+    } else {
+      return "Saída de pontos";
+    }
+  };
   
   // Load data when component mounts and subscribe to PointsUpdateEvent
   useEffect(() => {
@@ -208,46 +292,25 @@ const Extrato: React.FC = () => {
   
   // Format date for display
   const formatDate = (dateString: string) => {
-    // Try to convert string to Date
-    const date = new Date(dateString);
-    
-    if (isNaN(date.getTime())) {
-      // If not a valid date, show string as is
+    try {
+      // Use the same parsing logic for consistency
+      const date = parseFlexibleDate(dateString);
+      
+      if (isNaN(date.getTime())) {
+        // If not a valid date, show string as is
+        return dateString;
+      }
+      
+      return date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      // Fall back to showing the original string
       return dateString;
-    }
-    
-    return date.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-  
-  // Get description for a transaction
-  const getTransactionDescription = (log: Log) => {
-    if (log.product) {
-      // If product is an object with name property
-      if (typeof log.product === 'object' && log.product !== null && log.product.name) {
-        return `Resgate: ${log.product.name}`;
-      }
-      
-      // If product is a string (ID), try to get product name from map
-      if (typeof log.product === 'string' && productsMap[log.product]) {
-        return `Resgate: ${productsMap[log.product].name}`;
-      }
-      
-      // Fallback if we can't find the product name
-      return "Resgate de produto";
-    } else if (log.plasticDiscarted && log.plasticDiscarted > 0) {
-      return `Descarte de ${log.plasticDiscarted} plásticos`;
-    } else if (log.metalDiscarted && log.metalDiscarted > 0) {
-      return `Descarte de ${log.metalDiscarted} metais`;
-    } else if (log.points > 0) {
-      return "Entrada de pontos";
-    } else {
-      return "Saída de pontos";
     }
   };
   
@@ -259,21 +322,6 @@ const Extrato: React.FC = () => {
       <p>Você ainda não tem movimentações de pontos em sua conta.</p>
     </div>
   );
-  
-  // Get product name from log
-  const getProductName = (log: Log) => {
-    if (!log.product) return null;
-    
-    if (typeof log.product === 'object' && log.product.name) {
-      return log.product.name;
-    }
-    
-    if (typeof log.product === 'string' && productsMap[log.product]) {
-      return productsMap[log.product].name;
-    }
-    
-    return "Produto desconhecido";
-  };
   
   // Check if log is for a product redemption
   const isProductRedemption = (log: Log) => {
@@ -322,7 +370,7 @@ const Extrato: React.FC = () => {
                 <h3 className="transactions-header">Histórico de Transações</h3>
               </IonLabel>
               
-              <IonList>
+              <IonList className='transaction-list'>
                 {allLogs.map((log) => (
                   <IonCard key={log._id} className="transaction-card">
                     <div className="transaction-content">
@@ -369,18 +417,18 @@ const Extrato: React.FC = () => {
         </div>
         
         {/* Toast for success/error messages */}
-        <IonToast
+        {/* <IonToast
           isOpen={showToast}
           onDidDismiss={() => setShowToast(false)}
           message={toastMessage}
           duration={2000}
           position="bottom"
           color="success"
-        />
+        /> */}
       </IonContent>
       <Toolbar />
     </IonPage>
   );
 };
 
-export default Extrato;
+export default Statement;
