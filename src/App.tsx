@@ -49,6 +49,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 import EditProfile from './pages/EditProfile';
 import RedeemedProducts from './pages/Redeem';
+import Statement from './pages/Statement';
 
 setupIonicReact();
 
@@ -77,6 +78,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/redeem">
             <Redeem />
+          </Route>
+          <Route exact path="/statement">
+            <Statement />
           </Route>
           <Route exact path="/">
             <Redirect to="/login" />

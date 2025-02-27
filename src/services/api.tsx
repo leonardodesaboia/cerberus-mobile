@@ -22,8 +22,8 @@ interface UserData {
   username: string;
   password: string;
   points: number;
-  metalDiscarted: number;
-  plasticDiscarted: number;
+  metalDiscarded: number;
+  plasticDiscarded: number;
   isActive: boolean;
 }
 

@@ -33,6 +33,10 @@ const Header: React.FC = () => {
         };
     }, []);
 
+    const changeWindow = () => {
+        window.location.href = '/statement';
+    }
+
     if (loading) {
         return (
             <IonHeader>
@@ -62,7 +66,7 @@ const Header: React.FC = () => {
                 <div className="points-display">
                     <IonLabel className="custom-saldo">Seu saldo de pontos</IonLabel>
                     <IonText>
-                        <h3 className="custom-points">{currentPoints} <IonIcon icon="chevron-forward-outline" style={{fontSize: "20px"}} /></h3>
+                        <h3 className="custom-points">{currentPoints} <IonIcon icon="chevron-forward-outline" style={{fontSize: "20px"}} onClick={changeWindow}/></h3>
                     </IonText>
                 </div>
             </IonToolbar>
