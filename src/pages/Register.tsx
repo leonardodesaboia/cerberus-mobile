@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { registerUser, loginUser, getUserData } from '../services/api';
 import Input from '../components/Input';
 import '../styles/Register.css';
+import { Eye, EyeOff } from 'lucide-react';
+import { motion } from "framer-motion";
 
 interface FormData {
     email: string;
@@ -65,7 +67,7 @@ const Register: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [navigationError, setNavigationError] = useState<string>('');
-
+    const [isShow, setIsShow] = useState<boolean>(false);
 
     const validators: Validators = {
         email: (value: string): string => {
@@ -194,13 +196,13 @@ const Register: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>): Promise<void> => {
         event.preventDefault();
         setApiError('');
         setSuccessMessage('');
         
         const allTouched = Object.keys(touched).reduce(
-            (acc, key) => ({ ...acc, [key]: true }), 
+            (acc, key) => ({ ...acc, [key as keyof TouchedFields]: true }), 
             {} as TouchedFields
         );
         setTouched(allTouched);
@@ -269,8 +271,8 @@ const Register: React.FC = () => {
                 const user = await getUserData();
                 localStorage.setItem('user', JSON.stringify(user));
 
+
                 window.location.href = '/home';
-                
             } catch (error: any) {
                 setFormSubmitted(false);
                 
@@ -336,6 +338,10 @@ const Register: React.FC = () => {
         setErrors(prev => ({ ...prev, [field]: validationError }));
     };
 
+    const handlePassword = () => {
+        setIsShow(!isShow);
+    };
+
     useEffect(() => {
         if (touched.confirmPassword) {
             const validationError = validators.confirmPassword(formData.confirmPassword, formData.password);
@@ -345,92 +351,126 @@ const Register: React.FC = () => {
 
     return (
         <div className="register-container">
-            <div className="register-header">
-            <h1 className='register-title'><span className="material-symbols-outlined">recycling</span>Ecopoints</h1>
-            </div>
-
-            <div className="form-container-register">
-                {apiError && (
-                    <div className="error-message">
-                        {apiError}
-                    </div>
-                )}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="register-card"
+            >
+                <div className="register-image-container">
+                    {/* <img src="../public/register-eco-illustration.svg" alt="Ilustração de sustentabilidade" className="register-image" /> */}
+                </div>
                 
-                {successMessage && (
-                    <div className="success-message">
-                        {successMessage}
+                <div className="register-form-section">
+                    <div className="register-header">
+                        <h1 className="register-title">
+                            <img src="../public/recycle.png" alt="" className="logo"/> EcoPoints
+                        </h1>
+                        <p className="register-subtitle">Crie sua conta e comece a contribuir</p>
                     </div>
-                )}
 
-                {navigationError && (
-                    <div className="error-message">
-                        {navigationError}
-                    </div>
-                )}
+                    {apiError && <div className="error-message">{apiError}</div>}
+                    {successMessage && <div className="success-message">{successMessage}</div>}
+                    {navigationError && <div className="error-message">{navigationError}</div>}
+            
+                    <motion.form 
+                        className="register-form"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        onSubmit={handleSubmit}
+                    >
+                        <Input 
+                            label="Email" 
+                            type="email" 
+                            value={formData.email}
+                            onChange={handleChange('email')}
+                            onBlur={handleBlur('email')}
+                            error={errors.email}
+                            placeholder="Digite seu email"
+                            disabled={isLoading}
+                        />
 
-                <form className="register-form" onSubmit={handleSubmit}>
-                    <Input 
-                        label="Email" 
-                        type="email" 
-                        value={formData.email}
-                        onChange={handleChange('email')}
-                        onBlur={handleBlur('email')}
-                        error={errors.email}
-                        placeholder="Digite seu email"
-                        disabled={isLoading}
-                    />
+                        <Input 
+                            label="CPF" 
+                            type="text" 
+                            value={formData.cpf}
+                            onChange={handleChange('cpf')}
+                            onBlur={handleBlur('cpf')}
+                            error={errors.cpf}
+                            placeholder="Digite o seu CPF"
+                            disabled={isLoading}
+                        />  
 
-                    <Input 
-                        label="CPF" 
-                        type="text" 
-                        value={formData.cpf}
-                        onChange={handleChange('cpf')}
-                        onBlur={handleBlur('cpf')}
-                        error={errors.cpf}
-                        placeholder="Digite o seu CPF"
-                        disabled={isLoading}
-                    />  
+                        <Input
+                            label="Username" 
+                            type="text" 
+                            value={formData.username}
+                            onChange={handleChange('username')}
+                            onBlur={handleBlur('username')}
+                            error={errors.username}
+                            placeholder="Digite o seu nome de usuário"
+                            disabled={isLoading}
+                        />
+                        
+                        <div className="password-container">
+                            <Input 
+                                label="Senha" 
+                                type={isShow ? "text" : "password"} 
+                                value={formData.password}
+                                onChange={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                error={errors.password}
+                                placeholder="Digite sua senha"
+                                disabled={isLoading}
+                            />
+                            <span className="showPass" onClick={handlePassword}>
+                                {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
+                            </span>
+                        </div>
 
-                    <Input
-                        label="Username" 
-                        type="text" 
-                        value={formData.username}
-                        onChange={handleChange('username')}
-                        onBlur={handleBlur('username')}
-                        error={errors.username}
-                        placeholder="Digite o seu nome de usuário"
-                        disabled={isLoading}
-                    />
-                  
-                  <Input 
-                      label="Senha" 
-                      type="password" 
-                      value={formData.password}
-                      onChange={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      error={errors.password}
-                      placeholder="Digite sua senha"
-                  />
+                        <div className="password-container">
+                            <Input 
+                                label="Confirmar senha" 
+                                type={isShow ? "text" : "password"} 
+                                value={formData.confirmPassword}
+                                onChange={handleChange('confirmPassword')}
+                                onBlur={handleBlur('confirmPassword')}
+                                error={errors.confirmPassword}
+                                placeholder="Confirme sua senha"
+                                disabled={isLoading}
+                            />
+                        </div>
+                        
+                        <div className="password-requirements">
+                            <span>A senha deve conter no mínimo:</span>
+                            <ul>
+                                <li>8 caracteres</li>
+                                <li>Uma letra maiúscula</li>
+                                <li>Uma letra minúscula</li>
+                                <li>Um símbolo (!@#$%^&*)</li>
+                                <li>Um número</li>
+                            </ul>
+                        </div>
 
-                  <Input 
-                      label="Confirmar senha" 
-                      type="password" 
-                      value={formData.confirmPassword}
-                      onChange={handleChange('confirmPassword')}
-                      onBlur={handleBlur('confirmPassword')}
-                      error={errors.confirmPassword}
-                      placeholder="Confirme sua senha"
-                  />
-
-                    <button type="submit" className="register-button">Cadastrar</button>
-              </form>
-          </div>
-
-          <div className="wave-container-register">
-              <img src='/Vector.png' alt='Bottom img' className='wave-register'/>
-          </div>
-      </div>
-  );
-}
+                        <div className="form-actions">
+                            <button 
+                                type="submit" 
+                                className="register-button" 
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Processando...' : 'Cadastrar'}
+                            </button>
+                            
+                            <div className="login-link">
+                                Já tem uma conta? <a href="/login">Faça login aqui</a>
+                            </div>
+                        </div>
+                    </motion.form>
+                </div>
+            </motion.div>
+        </div>
+    );
+};
 
 export default Register;

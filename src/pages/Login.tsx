@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState, FormEvent, ChangeEvent, FocusEvent } from 'react';
 import Input from '../components/Input';
 import { loginUser, getUserData } from '../services/api';
+import { Eye, EyeOff } from 'lucide-react';
 import '../styles/Login.css';
+import { motion } from 'framer-motion';
 
 interface FormData {
     email: string;
@@ -13,18 +15,17 @@ interface FormErrors {
     password: string;
 }
 
-interface TouchedFields {
+interface FormTouched {
     email: boolean;
     password: boolean;
 }
 
-interface Validators {
-    email: (value: string) => string;
-    password: (value: string) => string;
+interface TokenPayload {
+    id: string;
+    [key: string]: any;
 }
 
-const Login: React.FC = () => {
-    
+function Login(): JSX.Element {
     const [formData, setFormData] = useState<FormData>({
         email: '',
         password: ''
@@ -35,15 +36,16 @@ const Login: React.FC = () => {
         password: ''
     });
 
-    const [touched, setTouched] = useState<TouchedFields>({
+    const [touched, setTouched] = useState<FormTouched>({
         email: false,
         password: false
     });
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [apiError, setApiError] = useState<string>('');
+    const [isShow, setIsShow] = useState<boolean>(false);
 
-    const validators: Validators = {
+    const validators = {
         email: (value: string): string => {
             if (!value) return 'Email é obrigatório';
             value = value.trim();
@@ -57,7 +59,7 @@ const Login: React.FC = () => {
         }
     };
 
-    const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setFormData(prev => ({ ...prev, [field]: value }));
         
@@ -73,7 +75,11 @@ const Login: React.FC = () => {
         setErrors(prev => ({ ...prev, [field]: validationError }));
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    const handlePassword = (): void => {
+        setIsShow(!isShow);
+    };
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         setApiError('');
 
@@ -95,17 +101,15 @@ const Login: React.FC = () => {
             try {
                 const data = await loginUser(formData);
 
+                // Salva o token
                 const token = data.token;
                 const arrayToken = data.token.split('.');
-                const tokenPayload = JSON.parse(atob(arrayToken[1]));
+                const tokenPayload: TokenPayload = JSON.parse(atob(arrayToken[1]));
                 localStorage.setItem('token', token);
                 localStorage.setItem('userId', tokenPayload.id);
+                localStorage.setItem('user', JSON.stringify(await getUserData()));
                 
-                const userData = await getUserData();
-                localStorage.setItem('user', JSON.stringify(userData));
-                
-                window.location.href = '/home';
-                
+                window.location.href = '/home';                
             } catch (error: any) {
                 if (error.message.includes('credenciais')) {
                     setApiError('Email ou senha incorretos');
@@ -121,55 +125,84 @@ const Login: React.FC = () => {
 
     return (
         <div className="login-container">
-            <div className="login-header">
-                <h1>Cerberus</h1>
-            </div>
-
-            <div className="form-container-login">
-                {apiError && (
-                    <div className="error-message">
-                        {apiError}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="login-card"
+            >
+                <div className="login-image-container">
+                    {/* <img src="../public/lixo1.jpeg" alt="Ilustração de sustentabilidade e reciclagem" className="login-image" /> */}
+                </div>
+                
+                <div className="login-form-section">
+                    <div className="login-header">
+                        <h1 className="login-title">
+                            <img src="../public/recycle.png" alt="" className="logo-acc"/> EcoPoints
+                        </h1>
+                        <p className="login-subtitle">Faça login para acessar sua conta</p>
                     </div>
-                )}
 
-                <form onSubmit={handleSubmit} className="login-form">
-                    <Input 
-                        label="Email" 
-                        type="text" 
-                        value={formData.email}
-                        onChange={handleChange('email')}
-                        onBlur={handleBlur('email')}
-                        error={errors.email}
-                        placeholder="Digite seu email"
-                        disabled={isLoading}
-                    />
-                    
-                    <Input 
-                        label="Senha" 
-                        type="password" 
-                        value={formData.password}
-                        onChange={handleChange('password')}
-                        onBlur={handleBlur('password')}
-                        error={errors.password}
-                        placeholder="Digite sua senha"
-                        disabled={isLoading}
-                    />
+                    {apiError && (
+                        <div className="error-message">
+                            {apiError}
+                        </div>
+                    )}
 
-                    <button 
-                        type="submit" 
-                        className="login-button"
-                        disabled={isLoading}
+                    <motion.form 
+                        onSubmit={handleSubmit} 
+                        className="login-form"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
                     >
-                        {isLoading ? 'Entrando...' : 'Entrar'}
-                    </button>
+                        <Input 
+                            label="Email" 
+                            type="text" 
+                            value={formData.email}
+                            onChange={handleChange('email')}
+                            onBlur={handleBlur('email')}
+                            error={errors.email}
+                            placeholder="Digite seu email"
+                            disabled={isLoading}
+                        />
+                        
+                        <div className="password-container">
+                            <Input 
+                                label="Senha" 
+                                type={isShow ? "text" : "password"} 
+                                value={formData.password}
+                                onChange={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                error={errors.password}
+                                placeholder="Digite sua senha"
+                                disabled={isLoading} 
+                            />
+                            <span className="showPass" onClick={handlePassword}>
+                                {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
+                            </span>
+                        </div>
 
-                    <div className="create-account-login">
-                        <p>Ainda não possui uma conta? <a href="/register">Cadastre-se</a></p>
-                    </div>
-                </form>
-            </div>
+                        <div className="login-forgot-link">
+                            <a href="/forgot-password">Esqueceu a senha?</a>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            className="login-button"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Entrando...' : 'Entrar'}
+                        </button>
+
+                        <div className="login-register-link">
+                            Não tem uma conta? <a href="/register">Crie sua conta aqui</a>
+                        </div>
+                    </motion.form>
+                </div>
+            </motion.div>
         </div>
     );
-};
+}
 
 export default Login;

@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon, IonAlert } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
@@ -67,9 +67,31 @@ const Profile: React.FC = () => {
                     {/* bor=toes salvar,sair e deletar */}
                     <div className="save">
                         <IonButton fill="clear" className="save-button" onClick={changeWindow}><IonIcon icon="create-outline" />Editar informações</IonButton>
+                        
                     </div>
                     <div className="logout">
-                    <IonButton className='logout-button' fill="clear" style={{ color: 'red' }} onClick={handleLogout}>Sair</IonButton>
+                    <IonButton fill='clear' className="logout-button" id="present-alert" style={{ color: 'red' }}>Sair</IonButton>
+                        <IonAlert
+                            header="Tem certeza que deseja sair?"
+                            trigger="present-alert"
+                            buttons={[
+                            {
+                                text: 'Cancelar',
+                                role: 'cancel',
+                                handler: () => {
+                                console.log('Alert canceled');
+                                },
+                            },
+                            {
+                                text: 'Sair',
+                                role: 'confirm',
+                                handler: () => {
+                                handleLogout();
+                                },
+                            },
+                            ]}
+                            onDidDismiss={({ detail }) => console.log(`Dismissed with role: ${detail.role}`)}
+                        ></IonAlert>
                 </div>
                 </div>
             </IonContent>

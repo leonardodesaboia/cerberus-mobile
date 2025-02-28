@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon, IonToast } from '@ionic/react';
+import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonLabel, IonIcon, IonToast, IonAlert } from '@ionic/react';
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
@@ -123,7 +123,30 @@ const EditProfile: React.FC = () => {
                 </div> */}
 
                 <div className="delete-account">
-                    <IonButton fill="clear" className="delete-button" color="danger" onClick={deleteUser}>Deletar conta</IonButton>
+                    <IonButton fill='clear' className="delete-button" id="present-alert" color="danger">Deletar conta</IonButton>
+                        <IonAlert
+                            header="Tem certeza que deseja excluir sua conta?"
+                            trigger="present-alert"
+                            subHeader='Essa ação não pode ser desfeita'
+                            buttons={[
+                            {
+                                text: 'Cancelar',
+                                role: 'cancel',
+                                handler: () => {
+                                console.log('Alert canceled');
+                                },
+                            },
+                            {
+                                text: 'Excluir permanente',
+                                role: 'confirm',
+                                handler: () => {
+                                deleteUser();
+                                },
+                            },
+                            ]}
+                            onDidDismiss={({ detail }) => console.log(`Dismissed with role: ${detail.role}`)}
+                        ></IonAlert>
+                    
                 </div>
                 </div>
 

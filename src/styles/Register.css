@@ -1,184 +1,197 @@
 .register-container {
-    min-height: 100vh;
-    background-color: white;
-    display: flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f8fa;
+  padding: 20px;
+}
+
+.register-card {
+  display: flex;
+  width: 1000px;
+  max-width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.register-image-container {
+ 
+    flex: 1;
+    background-image: url(../../public/lixo2.jpeg);
+    background-position: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* padding: 4rem; */
+  
+}
+
+.register-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.register-form-section {
+  flex: 1.2;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.register-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.register-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.register-subtitle {
+  color: #757575;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.logo {
+  height: 32px;
+  margin-right: 10px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.password-container {
+  position: relative;
+}
+
+.showPass {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(27%);
+  cursor: pointer;
+  color: #757575;
+}
+
+.register-button {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.register-button:hover {
+  background-color: #1b5e20;
+}
+
+.register-button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.login-link {
+  text-align: center;
+  font-size: 14px;
+  color: #757575;
+}
+
+.login-link a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.password-requirements {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+.password-requirements span {
+  color: #616161;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.password-requirements ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #757575;
+}
+
+.password-requirements li {
+  margin-bottom: 4px;
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 768px) {
+  .register-image-container {
+    display: none;
+  } 
+
+  .register-card {
     flex-direction: column;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .register-header {
-    background-color: var(--ion-primary-color);
-    padding: 16px;
-    margin-bottom: 0;
-    width: 100%;
-    text-align: center;
-    border-radius: 0 0 24px 24px;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .register-header h1 {
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0;
-  }
-  
-  .form-container-register {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 0 0 16px 16px;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .input-label {
-    color: #333;
-    font-size: 0.875rem;
-  }
-  
-  .input-field {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: var(--ion-light-color);
-    font-size: 0.875rem;
-  }
-  
-  .input-field:focus {
-    outline: none;
-    border-color: var(--ion-tertiary-color);
-    box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
-  }
-  
-  .forgot-password {
-    text-align: left;
-  }
-  
-  .forgot-password a, 
-  .create-account a {
-    color: var(--ion-primary-color);
-    text-decoration: none;
-    font-size: 0.875rem;
-  }
-  
-  .forgot-password a:hover, 
-  .create-account a:hover {
-    text-decoration: underline;
-  }
-  
-  .register-button {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--ion-primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .register-button:hover {
-    background-color: var(--ion-tertiary-color);
-  }
-  
-  .wave-container-register {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    z-index: 0;
-  }
-  
-  .wave-register {
-    width: 100%;
-    max-height: 250px;
-  }
-  
-  .input-error {
-    border-color: #dc3545;
-    background-color: #fff;
-  }
-  
-  .input-error:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
-  }
-  
-  .error-message {
-    color: #dc3545;
-    font-size: 0.75rem;
-    margin-top: 4px;
+    max-width: 400px;
   }
 
-  .register-title .material-symbols-outlined{
-    font-size: 28px;
-    margin: 0;
-    padding: 0;
+  .register-image-container {
+    padding: 30px;
+    max-height: 180px;
   }
-  
-  @media (min-width: 768px) {
-    .register-container {
-      justify-content: center;
-      min-height: 100vh;
-    }
-  
-    .register-header {
-      max-width: 450px;
-      border-radius: 24px 24px 0 0;
-    }
-  
-    .form-container-register {
-      max-width: 450px;
-      padding: 24px;
-      background: white;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-  
-    .input-field {
-      padding: 14px;
-      font-size: 1rem;
-    }
-  
-    .register-button {
-      padding: 14px;
-      font-size: 1rem;
-    }
-  
-    .wave-register {
-      position: absolute;
-      bottom: 0;
-      max-height: 100px;
-      width: 100%;
-    }
+
+  .register-form-section {
+    padding: 20px;
   }
-  
-  @media (min-width: 1024px) {
-    .register-header,
-    .form-container-register {
-      max-width: 500px;
-    }
-  
-    .register-header h1 {
-      font-size: 2.5rem;
-    }
-  }
+}

@@ -46,6 +46,10 @@ interface UpdatePointsRequest {
   points: number;
 }
 
+interface ForgotPasswordResponse {
+  message: string;
+}
+
 export const registerUser = async (userData: UserRegistrationData): Promise<UserData> => {
   try {
     const response = await fetch(`${API_URL}/user`, {
@@ -478,5 +482,29 @@ export const markLogAsRedeemed = async (logId: string): Promise<any> => {
   } catch (error: any) {
     console.error("Erro ao marcar log como resgatado:", error);
     throw new Error(error.message || 'Erro ao marcar como resgatado');
+  }
+};
+
+export const requestPasswordReset = async (email: string): Promise<ForgotPasswordResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/user/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email })
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao solicitar redefinição de senha');
+    }
+    
+    return {
+      message: data.message || 'Email de recuperação enviado. Por favor, verifique sua caixa de entrada.'
+    };
+  } catch (error: any) {
+    throw new Error(error.message || 'Erro ao conectar com o servidor');
   }
 };

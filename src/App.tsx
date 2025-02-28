@@ -50,6 +50,7 @@ import './theme/variables.css';
 import EditProfile from './pages/EditProfile';
 import RedeemedProducts from './pages/Redeem';
 import Statement from './pages/Statement';
+import ForgotPassword from './pages/ForgotPassword';
 
 setupIonicReact();
 
@@ -81,6 +82,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/statement">
             <Statement />
+          </Route>
+          <Route exact path="/forgot-password">
+            <ForgotPassword />
           </Route>
           <Route exact path="/">
             <Redirect to="/login" />
