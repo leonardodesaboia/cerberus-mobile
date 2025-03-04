@@ -125,14 +125,6 @@
   text-decoration: underline;
 }
 
-.error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-}
 
 /* Media query para dispositivos móveis */
 @media (max-width: 768px) {

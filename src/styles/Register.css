@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: #f5f8fa;
   padding: 20px;
+  overflow: auto;
 }
 
 .register-card {
@@ -14,24 +15,16 @@
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
 }
 
 .register-image-container {
- 
-    flex: 1;
-    background-image: url(../../public/lixo2.jpeg);
-    background-position: left;
-    background-size: cover;
-    background-repeat: no-repeat;
-    /* padding: 4rem; */
-  
-}
-
-.register-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  flex: 1;
+  background-image: url(../../public/lixo2.jpeg);
+  background-position: left;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .register-form-section {
@@ -39,8 +32,9 @@
   padding: 30px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  max-height: 90vh;
+  overflow-y: auto; /* Mantém a capacidade de rolagem */
+  max-height: 100vh; /* Usa a altura da viewport como máximo */
+  height: auto; /* Remove a altura fixa que estava bloqueando a rolagem */
 }
 
 .register-header {
@@ -53,7 +47,7 @@
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: #2e7d32;
+  color: var(--ion-primary-color);
   margin-bottom: 8px;
 }
 
@@ -71,24 +65,33 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px; /* Reduzido para economizar espaço */
 }
 
 .password-container {
   position: relative;
+  width: 100%;
 }
 
-.showPass {
+.show-password-button {
   position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(27%);
+  right: 10px;
+  top: 56px; 
+  background: transparent;
+  border: none;
   cursor: pointer;
   color: #757575;
+  z-index: 10;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
 }
 
 .register-button {
-  background-color: #2e7d32;
+  background-color: var(--ion-primary-color);
   color: white;
   border: none;
   border-radius: 8px;
@@ -101,11 +104,11 @@
 }
 
 .register-button:hover {
-  background-color: #1b5e20;
+  background-color: var(--ion-tertiary-color);
 }
 
 .register-button:disabled {
-  background-color: #a5d6a7;
+  background-color: var(--ion-secondary-color);
   cursor: not-allowed;
 }
 
@@ -123,7 +126,7 @@
 }
 
 .login-link a {
-  color: #2e7d32;
+  color: var(--ion-primary-color);
   text-decoration: none;
   font-weight: 500;
 }
@@ -132,37 +135,44 @@
   text-decoration: underline;
 }
 
+/* Estilo para mensagens de erro e sucesso melhorados */
 .error-message {
   background-color: #ffebee;
-  color: #c62828;
+  color: var(--ion-danger-color);
   padding: 12px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  border-left: 4px solid var(--ion-danger-color);
 }
 
 .success-message {
   background-color: #e8f5e9;
-  color: #2e7d32;
+  color: var(--ion-success-color);
   padding: 12px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  border-left: 4px solid var(--ion-success-color);
 }
 
 .password-requirements {
   background-color: #f5f5f5;
   border-radius: 8px;
-  padding: 15px;
+  padding: 10px 15px;
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .password-requirements span {
   color: #616161;
   font-weight: 500;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .password-requirements ul {
@@ -172,11 +182,27 @@
 }
 
 .password-requirements li {
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
-/* Media query para dispositivos móveis */
 @media (max-width: 768px) {
+  .show-password-button {
+    position: absolute;
+    right: 10px;
+    top: 52px; 
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #757575;
+    z-index: 10;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+  }
+
   .register-image-container {
     display: none;
   } 
@@ -186,12 +212,9 @@
     max-width: 400px;
   }
 
-  .register-image-container {
-    padding: 30px;
-    max-height: 180px;
-  }
-
   .register-form-section {
     padding: 20px;
+    height: auto;
+    max-height: none;
   }
 }

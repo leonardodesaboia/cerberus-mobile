@@ -4,6 +4,7 @@ import Input from '../components/Input';
 import '../styles/Register.css';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from "framer-motion";
+import { IonContent } from '@ionic/react';
 
 interface FormData {
     email: string;
@@ -71,30 +72,30 @@ const Register: React.FC = () => {
 
     const validators: Validators = {
         email: (value: string): string => {
-            if (!value) return 'Email é obrigatório';
+            if (!value) return 'O campo de email não pode estar vazio';
         
             value = value.trim();
         
             const atCount = (value.match(/@/g) || []).length;
-            if (atCount !== 1) return 'Email deve conter exatamente um @';
+            if (atCount !== 1) return 'Formato de email inválido: deve conter exatamente um @';
         
             const [localPart, domain] = value.split('@');
         
-            if (!localPart || localPart.length < 3) return 'Parte local do email deve ter pelo menos 3 caracteres';
-            if (localPart.length > 64) return 'Parte local do email não pode ter mais de 64 caracteres';
+            if (!localPart || localPart.length < 3) return 'A parte local do email deve ter pelo menos 3 caracteres';
+            if (localPart.length > 64) return 'A parte local do email é muito longa (máx. 64 caracteres)';
         
             const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
             if (!localPartRegex.test(localPart)) {
                 return 'Email deve começar e terminar com letra ou número';
             }
         
-            if (!domain) return 'Domínio do email não pode estar vazio';
-            if (domain.length > 255) return 'Domínio do email não pode ter mais de 255 caracteres';
-            if (!domain.includes('.')) return 'Domínio deve conter pelo menos um ponto';
+            if (!domain) return 'O domínio do email está ausente';
+            if (domain.length > 255) return 'O domínio do email é muito longo';
+            if (!domain.includes('.')) return 'O domínio deve conter pelo menos um ponto';
         
             const domainRegex = /^[a-zA-Z][-a-zA-Z.]*[a-zA-Z](\.[a-zA-Z]{2,})+$/;
             if (!domainRegex.test(domain)) {
-                return 'Domínio deve conter apenas letras, pontos e hífens';
+                return 'Formato de domínio inválido';
             }
         
             if (value.includes('..') || value.includes('--') || value.includes('__')) {
@@ -121,10 +122,10 @@ const Register: React.FC = () => {
         cpf: (value: string): string => {
             const cpfClean = value.replace(/\D/g, '');
             
-            if (!cpfClean) return 'CPF é obrigatório';
-            if (cpfClean.length !== 11) return 'CPF deve conter 11 dígitos';
+            if (!cpfClean) return 'O campo de CPF não pode estar vazio';
+            if (cpfClean.length !== 11) return 'CPF deve conter exatamente 11 dígitos';
             
-            if (/^(\d)\1{10}$/.test(cpfClean)) return 'CPF inválido';
+            if (/^(\d)\1{10}$/.test(cpfClean)) return 'CPF inválido: dígitos repetidos não são permitidos';
             
             let sum = 0;
             let remainder;
@@ -135,7 +136,7 @@ const Register: React.FC = () => {
             
             remainder = (sum * 10) % 11;
             if (remainder === 10 || remainder === 11) remainder = 0;
-            if (remainder !== parseInt(cpfClean.substring(9, 10))) return 'CPF inválido';
+            if (remainder !== parseInt(cpfClean.substring(9, 10))) return 'CPF inválido: dígito verificador incorreto';
             
             sum = 0;
             for (let i = 1; i <= 10; i++) {
@@ -144,36 +145,36 @@ const Register: React.FC = () => {
             
             remainder = (sum * 10) % 11;
             if (remainder === 10 || remainder === 11) remainder = 0;
-            if (remainder !== parseInt(cpfClean.substring(10, 11))) return 'CPF inválido';
+            if (remainder !== parseInt(cpfClean.substring(10, 11))) return 'CPF inválido: dígito verificador incorreto';
             
             return '';
         },
 
         username: (value: string): string => {
-            if (!value) return 'Username é obrigatório';
+            if (!value) return 'O campo de username não pode estar vazio';
             if (value.length < 3) return 'Username deve ter no mínimo 3 caracteres';
             if (value.length > 20) return 'Username deve ter no máximo 20 caracteres';
-            if (!/^[a-zA-Z0-9_]+$/.test(value)) return 'Username deve conter apenas letras, números e _';
+            if (!/^[a-zA-Z0-9_]+$/.test(value)) return 'Username deve conter apenas letras, números e _ (underline)';
             return '';
         },
 
         password: (value: string): string => {
-            if (!value) return 'Senha é obrigatória';
+            if (!value) return 'O campo de senha não pode estar vazio';
             if (value.length < 8) return 'Senha deve ter no mínimo 8 caracteres';
             if (value.length > 32) return 'Senha deve ter no máximo 32 caracteres';
         
             const allowedCharsRegex = /^[a-zA-Z0-9!@#$%^&*]+$/;
             if (!allowedCharsRegex.test(value)) {
-                return 'Senha deve conter apenas letras, números e caracteres especiais (!@#$%^&*)';
+                return 'Senha contém caracteres não permitidos';
             }
         
-            if (!/[A-Z]/.test(value)) return 'Senha deve conter pelo menos uma letra maiúscula';
-            if (!/[a-z]/.test(value)) return 'Senha deve conter pelo menos uma letra minúscula';
-            if (!/[0-9]/.test(value)) return 'Senha deve conter pelo menos um número';
-            if (!/[!@#$%^&*]/.test(value)) return 'Senha deve conter pelo menos um caractere especial (!@#$%^&*)';
+            if (!/[A-Z]/.test(value)) return 'Adicione pelo menos uma letra maiúscula';
+            if (!/[a-z]/.test(value)) return 'Adicione pelo menos uma letra minúscula';
+            if (!/[0-9]/.test(value)) return 'Adicione pelo menos um número';
+            if (!/[!@#$%^&*]/.test(value)) return 'Adicione pelo menos um símbolo especial (!@#$%^&*)';
         
             if (/(.)\1{2,}/.test(value)) {
-                return 'Senha não pode conter três ou mais caracteres iguais em sequência';
+                return 'Evite repetir o mesmo caractere mais de 2 vezes';
             }
         
             if (/\s/.test(value)) {
@@ -182,7 +183,7 @@ const Register: React.FC = () => {
         
             for (let i = 0; i < value.length; i++) {
                 if (value.charCodeAt(i) > 127) {
-                    return 'Senha não pode conter emojis ou caracteres especiais não permitidos';
+                    return 'Senha não pode conter emojis ou caracteres especiais não ASCII';
                 }
             }
         
@@ -190,7 +191,7 @@ const Register: React.FC = () => {
         },
 
         confirmPassword: (value: string, password: string): string => {
-            if (!value) return 'Confirmação de senha é obrigatória';
+            if (!value) return 'Confirme sua senha';
             if (value !== password) return 'As senhas não coincidem';
             return '';
         }
@@ -349,8 +350,10 @@ const Register: React.FC = () => {
         }
     }, [formData.password, touched.confirmPassword]);
 
+
     return (
-        <div className="register-container">
+        <IonContent scrollY={true} scrollEvents={true} forceOverscroll={true}>
+        <div className="register-container" >
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -358,7 +361,7 @@ const Register: React.FC = () => {
                 className="register-card"
             >
                 <div className="register-image-container">
-                    {/* <img src="../public/register-eco-illustration.svg" alt="Ilustração de sustentabilidade" className="register-image" /> */}
+                    {/* Imagem de background via CSS */}
                 </div>
                 
                 <div className="register-form-section">
@@ -424,9 +427,9 @@ const Register: React.FC = () => {
                                 placeholder="Digite sua senha"
                                 disabled={isLoading}
                             />
-                            <span className="showPass" onClick={handlePassword}>
+                            <button type="button" className="show-password-button" onClick={handlePassword}>
                                 {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
-                            </span>
+                            </button>
                         </div>
 
                         <div className="password-container">
@@ -440,6 +443,9 @@ const Register: React.FC = () => {
                                 placeholder="Confirme sua senha"
                                 disabled={isLoading}
                             />
+                            <button type="button" className="show-password-button" onClick={handlePassword}>
+                                {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
+                            </button>
                         </div>
                         
                         <div className="password-requirements">
@@ -470,6 +476,7 @@ const Register: React.FC = () => {
                 </div>
             </motion.div>
         </div>
+        </IonContent>
     );
 };
 

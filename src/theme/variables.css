@@ -16,7 +16,6 @@ ion-content {
 }
 
 * {
-  margin-top: -1px;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Lato', sans-serif;
@@ -67,6 +66,26 @@ ion-tab-bar{
   outline: none;
   border-color: var(--tertiary-color);
   box-shadow: 0 0 0 2px rgba(50, 109, 25, 0.2);
+}
+
+.input-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.input-field.input-error {
+  border-color: var(--ion-danger-color);
+}
+
+.error-container {
+  min-height: 20px; /* Altura fixa para a mensagem de erro */
+  margin-top: 4px;
+}
+
+.input-error-message {
+  color: var(--ion-danger-color);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 @media (min-width: 768px) {

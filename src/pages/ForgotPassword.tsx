@@ -4,6 +4,7 @@ import '../styles/ForgotPassword.css';
 import { Eye, EyeOff, Mail, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { requestPasswordReset } from '../services/api'; // Import the API function
+import { IonToast } from '@ionic/react';
 
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -11,6 +12,8 @@ const ForgotPassword: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
 
   useEffect(() => {
     setApiError('');
@@ -52,6 +55,8 @@ const ForgotPassword: React.FC = () => {
     setIsLoading(true);
     setApiError('');
     setSuccessMessage('');
+    setToastMessage(`Email enviado com sucesso!`);
+    setShowToast(true);
     
     try {
       const response = await requestPasswordReset(email);
@@ -149,6 +154,14 @@ const ForgotPassword: React.FC = () => {
           </motion.form>
         </div>
       </motion.div>
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={toastMessage}
+        duration={2000}
+        position="top"
+        color={toastMessage.includes('sucesso') ? 'success' : 'danger'}
+      />
     </div>
   );
 };

@@ -31,7 +31,9 @@ const Input: React.FC<InputProps> = ({
         onBlur={onBlur}
         {...props}
       />
-      {error && <span className="error-message">{error}</span>}
+      <div className="error-container">
+        {error && <span className="input-error-message">{error}</span>}
+      </div>
     </div>
   );
 };

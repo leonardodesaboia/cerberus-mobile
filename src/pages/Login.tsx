@@ -176,11 +176,11 @@ function Login(): JSX.Element {
                                 onBlur={handleBlur('password')}
                                 error={errors.password}
                                 placeholder="Digite sua senha"
-                                disabled={isLoading} 
+                                disabled={isLoading}
                             />
-                            <span className="showPass" onClick={handlePassword}>
+                            <button type="button" className="show-password-button" onClick={handlePassword}>
                                 {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
-                            </span>
+                            </button>
                         </div>
 
                         <div className="login-forgot-link">
