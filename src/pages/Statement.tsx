@@ -3,17 +3,12 @@ import {
   IonPage, 
   IonContent, 
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
   IonText, 
   IonLabel, 
   IonIcon, 
   IonRefresher,
   IonRefresherContent,
   IonChip,
-  IonToast,
-  IonItem,
   IonList
 } from '@ionic/react';
 import { 
@@ -44,6 +39,7 @@ interface Log {
   code?: string;
   redeemed?: boolean;
   activityDate: string;
+  timestamp?: number; // Campo adicional para ordenação
 }
 
 interface Product {
@@ -55,8 +51,12 @@ interface Product {
   stock?: number;
 }
 
+interface EnrichedLog extends Log {
+  timestamp: number;
+}
+
 const Statement: React.FC = () => {
-  const [allLogs, setAllLogs] = useState<Log[]>([]);
+  const [allLogs, setAllLogs] = useState<EnrichedLog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [userPoints, setUserPoints] = useState<number>(0);
@@ -64,18 +64,27 @@ const Statement: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [productsMap, setProductsMap] = useState<{[key: string]: Product}>({});
   
-  // Helper function to parse a date string based on format
+  // Função auxiliar melhorada para análise de datas em diversos formatos
   const parseFlexibleDate = (dateString: string): Date => {
-    // If dateString contains '/', assume it's in DD/MM/YYYY format (Brazilian)
+    if (!dateString) return new Date(0); // Data padrão para valores vazios
+    
+    // Tentar analisar como ISO 8601 primeiro (formato padrão)
+    const isoDate = new Date(dateString);
+    if (!isNaN(isoDate.getTime())) {
+      return isoDate;
+    }
+    
+    // Se a string contiver '/', assumir formato DD/MM/YYYY (formato brasileiro)
     if (dateString.includes('/')) {
+      // Se houver vírgula, separar data e hora
       const parts = dateString.split(', ');
       const datePart = parts[0].split('/');
       
       const day = parseInt(datePart[0]);
-      const month = parseInt(datePart[1]) - 1;  // JS months are 0-based
+      const month = parseInt(datePart[1]) - 1;  // Meses em JS são baseados em 0
       const year = parseInt(datePart[2]);
       
-      // If there's a time part
+      // Se houver parte de hora
       if (parts.length > 1) {
         const timePart = parts[1].split(':');
         const hour = parseInt(timePart[0]);
@@ -86,19 +95,40 @@ const Statement: React.FC = () => {
       } else {
         return new Date(year, month, day);
       }
-    } 
+    }
     
-    // Default to standard ISO format
-    return new Date(dateString);
+    // Tentativa final: dividir a string e verificar partes
+    try {
+      // Verificar se é um timestamp (número)
+      if (!isNaN(Number(dateString))) {
+        return new Date(Number(dateString));
+      }
+      
+      // Última tentativa: dividir por hífen ou espaço
+      const parts = dateString.split(/[-T ]/);
+      if (parts.length >= 3) {
+        // Assumir formato YYYY-MM-DD ou similar
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const day = parseInt(parts[2]);
+        return new Date(year, month, day);
+      }
+    } catch (e) {
+      console.error("Erro ao analisar data:", dateString, e);
+    }
+    
+    // Retornar data atual se todas as tentativas falharem
+    console.warn("Não foi possível analisar a data:", dateString);
+    return new Date();
   };
   
-  // Fetch products data to match product IDs with names
-  const fetchProductsData = async () => {
+  // Buscar dados de produtos para mapear IDs com nomes
+  const fetchProductsData = async (): Promise<{[key: string]: Product}> => {
     try {
       const productsData = await fetchProducts();
       console.log("Produtos obtidos:", productsData);
       
-      // Create a map of products by ID for easy access
+      // Criar um mapa de produtos por ID para fácil acesso
       const productsMap: {[key: string]: Product} = {};
       productsData.forEach((product: Product) => {
         productsMap[product._id] = product;
@@ -113,20 +143,20 @@ const Statement: React.FC = () => {
     }
   };
   
-  // Create a memoized fetchData function
-  const fetchData = useCallback(async () => {
+  // Função para buscar dados memorizada
+  const fetchData = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       setError(null);
       
-      // First get the products to map IDs to names
+      // Primeiro obter os produtos para mapear IDs aos nomes
       const products = await fetchProductsData();
       
-      // Get user data to show current points
+      // Obter dados do usuário para mostrar pontos atuais
       const userData = await getUserData();
       setUserPoints(userData.points);
       
-      // Get transaction logs
+      // Obter logs de transação
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
       
@@ -143,7 +173,7 @@ const Statement: React.FC = () => {
       });
       
       if (response.status === 400) {
-        // If no logs are found, set empty array and don't treat as error
+        // Se nenhum log for encontrado, defina matriz vazia e não trate como erro
         setAllLogs([]);
         setLoading(false);
         return;
@@ -154,16 +184,22 @@ const Statement: React.FC = () => {
         throw new Error(errorData.message || 'Erro ao carregar histórico de transações');
       }
       
-      const logsData = await response.json();
+      const logsData: Log[] = await response.json();
       
-      // Enrich logs with product details if needed
-      const enrichedLogs = logsData.map((log: Log) => {
-        // If the log already has populated product details, use them
+      // Enriquecer logs com detalhes do produto, se necessário
+      const enrichedLogs: EnrichedLog[] = logsData.map((log: Log) => {
+        // Criar timestamp para ordenação
+        const timestamp = parseFlexibleDate(log.activityDate).getTime();
+        
+        // Se o log já tiver detalhes do produto preenchidos, use-os
         if (typeof log.product === 'object' && log.product !== null) {
-          return log;
+          return {
+            ...log,
+            timestamp // Adicionar campo de timestamp para facilitar a ordenação
+          };
         }
         
-        // If there's a product ID but no product object, try to get product details from the map
+        // Se houver um ID de produto, mas nenhum objeto de produto, tente obter detalhes do produto do mapa
         if (typeof log.product === 'string' && log.product) {
           const productId = log.product;
           const productDetails = products[productId];
@@ -171,48 +207,35 @@ const Statement: React.FC = () => {
           if (productDetails) {
             return {
               ...log,
-              product: productDetails
+              product: productDetails,
+              timestamp
             };
           }
         }
         
-        // Return original log if no enrichment was possible
-        return log;
+        // Retornar log original se nenhum enriquecimento for possível
+        return {
+          ...log,
+          timestamp
+        };
       });
       
-      // Log raw dates for debugging
-      console.log("Raw dates before sorting:", enrichedLogs.map((log: { _id: any; activityDate: any; }) => ({
-        id: log._id,
-        date: log.activityDate
-      })));
-      
-      // Parse and sort by exact day and time (newest first)
-      const sortedLogs = [...enrichedLogs].sort((a, b) => {
-        try {
-          // Parse dates with the helper function
-          const dateA = parseFlexibleDate(a.activityDate);
-          const dateB = parseFlexibleDate(b.activityDate);
-          
-          // Check if dates are valid
-          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
-            throw new Error('Invalid date parsing');
-          }
-          
-          // Sort by timestamp (newest first)
-          return dateB.getTime() - dateA.getTime();
-        } catch (error) {
-          console.warn('Error parsing dates, falling back to string comparison:', error);
-          
-          // Fallback to basic string comparison
-          return b.activityDate.localeCompare(a.activityDate);
-        }
-      });
-      
-      // Log sorted dates for verification
-      console.log("Dates after sorting:", sortedLogs.map(log => ({
+      // Registrar datas brutas para depuração
+      console.log("Datas brutas antes da ordenação:", enrichedLogs.map((log) => ({
         id: log._id,
         date: log.activityDate,
-        parsedDate: parseFlexibleDate(log.activityDate).toISOString()
+        timestamp: log.timestamp
+      })));
+      
+      // Ordenar por timestamp (mais recente primeiro)
+      const sortedLogs = [...enrichedLogs].sort((a, b) => b.timestamp - a.timestamp);
+      
+      // Registrar datas ordenadas para verificação
+      console.log("Datas após ordenação:", sortedLogs.map(log => ({
+        id: log._id,
+        date: log.activityDate,
+        timestamp: log.timestamp,
+        formattedDate: new Date(log.timestamp).toLocaleString()
       })));
       
       setAllLogs(sortedLogs);
@@ -224,20 +247,20 @@ const Statement: React.FC = () => {
     }
   }, []);
   
-  // Get description for a transaction
-  const getTransactionDescription = (log: Log) => {
+  // Obter descrição para uma transação
+  const getTransactionDescription = (log: Log): string => {
     if (log.product) {
-      // If product is an object with name property
+      // Se o produto for um objeto com propriedade de nome
       if (typeof log.product === 'object' && log.product !== null && log.product.name) {
         return `Resgate: ${log.product.name}`;
       }
       
-      // If product is a string (ID), try to get product name from map
+      // Se o produto for uma string (ID), tente obter o nome do produto do mapa
       if (typeof log.product === 'string' && productsMap[log.product]) {
         return `Resgate: ${productsMap[log.product].name}`;
       }
       
-      // Fallback if we can't find the product name
+      // Fallback se não pudermos encontrar o nome do produto
       return "Resgate de produto";
     } else if (log.plasticDiscarded && log.plasticDiscarded > 0) {
       return `Descarte de ${log.plasticDiscarded} plásticos`;
@@ -250,32 +273,32 @@ const Statement: React.FC = () => {
     }
   };
   
-  // Load data when component mounts and subscribe to PointsUpdateEvent
+  // Carregar dados quando o componente é montado e assinar PointsUpdateEvent
   useEffect(() => {
     console.log("Extrato - Componente montado");
     fetchData();
     
-    // Subscribe to PointsUpdateEvent to refresh data when points are updated
-    const handlePointsUpdate = () => {
+    // Assinar o PointsUpdateEvent para atualizar dados quando os pontos são atualizados
+    const handlePointsUpdate = (): void => {
       console.log("Extrato - Atualizando dados após alteração de pontos");
       fetchData();
     };
     
     PointsUpdateEvent.subscribe(handlePointsUpdate);
     
-    // Refresh data when page becomes visible again
-    const handleVisibilityChange = () => {
+    // Atualizar dados quando a página ficar visível novamente
+    const handleVisibilityChange = (): void => {
       if (document.visibilityState === 'visible') {
         console.log("Extrato - Página focada novamente");
         fetchData();
       }
     };
     
-    // Listen for route changes using Ionic lifecycle events
+    // Ouvir alterações de rota usando eventos de ciclo de vida do Ionic
     document.addEventListener('ionViewWillEnter', fetchData);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Cleanup subscriptions
+    // Limpar assinaturas
     return () => {
       PointsUpdateEvent.unsubscribe(handlePointsUpdate);
       document.removeEventListener('ionViewWillEnter', fetchData);
@@ -283,24 +306,25 @@ const Statement: React.FC = () => {
     };
   }, [fetchData]);
   
-  // Handle pull-to-refresh
-  const handleRefresh = (event: CustomEvent) => {
+  // Lidar com atualização por puxar
+  const handleRefresh = (event: CustomEvent): void => {
     fetchData().then(() => {
       event.detail.complete();
     });
   };
   
-  // Format date for display
-  const formatDate = (dateString: string) => {
+  // Formatar data para exibição
+  const formatDate = (dateString: string): string => {
     try {
-      // Use the same parsing logic for consistency
-      const date = parseFlexibleDate(dateString);
+      // Usar a mesma lógica de análise para consistência
+      const timestamp = parseFlexibleDate(dateString).getTime();
       
-      if (isNaN(date.getTime())) {
-        // If not a valid date, show string as is
+      if (isNaN(timestamp)) {
+        // Se não for uma data válida, mostre a string como está
         return dateString;
       }
       
+      const date = new Date(timestamp);
       return date.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
@@ -309,13 +333,13 @@ const Statement: React.FC = () => {
         minute: '2-digit'
       });
     } catch (error) {
-      // Fall back to showing the original string
+      // Voltar a mostrar a string original
       return dateString;
     }
   };
   
-  // Render empty state when there are no transactions
-  const renderEmptyState = () => (
+  // Renderizar estado vazio quando não há transações
+  const renderEmptyState = (): JSX.Element => (
     <div className="empty-statement-state">
       <IonIcon icon={timeOutline} className="empty-icon" />
       <h3>Nenhuma transação encontrada</h3>
@@ -323,13 +347,13 @@ const Statement: React.FC = () => {
     </div>
   );
   
-  // Check if log is for a product redemption
-  const isProductRedemption = (log: Log) => {
+  // Verificar se o log é para um resgate de produto
+  const isProductRedemption = (log: Log): boolean => {
     return log.product !== undefined && log.product !== null;
   };
   
-  // Get redemption status
-  const getRedemptionStatus = (log: Log) => {
+  // Obter status de resgate
+  const getRedemptionStatus = (log: Log): boolean => {
     return log.redeemed === true;
   };
   
@@ -415,16 +439,6 @@ const Statement: React.FC = () => {
             </div>
           )}
         </div>
-        
-        {/* Toast for success/error messages */}
-        {/* <IonToast
-          isOpen={showToast}
-          onDidDismiss={() => setShowToast(false)}
-          message={toastMessage}
-          duration={2000}
-          position="bottom"
-          color="success"
-        /> */}
       </IonContent>
       <Toolbar />
     </IonPage>
