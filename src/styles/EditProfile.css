@@ -1,0 +1,142 @@
+/* Estilos para a tela de edição de perfil */
+.edit-profile-content {
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --background: #f2f2f2;
+  }
+
+  .header {
+    width: 100%;
+    border-bottom: none;
+  }
+  
+  .toolbar-edit-profile {
+    background-color: var(--ion-primary-color);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  
+  .back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  
+  .edit-profile-title {
+    color: white;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  /* Header verde */
+  .toolbar-edit-profile {
+    --background: var(--ion-primary-color); /* Background verde para o header */
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  
+  .edit-profile-title {
+    font-weight: 700;
+    font-size: 24px;
+    color: white; /* Texto branco para contrastar com o fundo verde */
+    margin-top: 10px;
+    margin-left: 8px; /* Pode ajustar essa margem conforme necessário */
+  }
+  
+  /* Formulário */
+  .edit-profile-form {
+    width: 90%;
+    background-color: white;
+    border-radius: 12px;
+    padding: 24px 20px;
+    box-shadow: 0px 4px 8px 4px rgba(0, 0, 0, 0.05);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .info-section {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .section-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--ion-primary-color); /* Verde escuro para os labels */
+  }
+  
+  .input-field {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .input-field:focus {
+    border-color: var(--ion-primary-color);
+  }
+  
+  /* Botões Centralizados */
+  .save, .delete-account {
+    display: flex;
+    justify-content: center; /* Centraliza os botões */
+    margin-top: 10px;
+  }
+  
+  .save-button {
+    width: 100%;
+    max-width: 200px;
+    background-color: var(--ion-primary-color);
+    color: white;
+    border-radius: 8px;
+    margin-top: 2rem;
+    height: 44px;
+    font-weight: 600;
+    --box-shadow: 0 4px 6px rgba(23, 66, 4, 0.2);
+  }
+  
+  .save-button:focus,
+  .save-button:hover {
+    background-color: var(--ion-tertiary-color);
+  }
+  
+  .delete-button {
+    width: 100%;
+    max-width: 200px;
+    color: var(--ion-danger-color);
+    border: 1px solid var(--ion-danger-color);
+    border-radius: 8px;
+    margin-top: 1rem;
+    height: 44px;
+    font-weight: 500;
+  }
+
+  /* Ajustes responsivos */
+  @media (max-width: 768px) {
+    .edit-profile-form {
+      width: 95%;
+      padding: 20px 16px;
+    }
+    
+    .edit-profile-title {
+      font-size: 22px;
+      max-width: 500px;
+    }
+  }
+  
+  @media (max-height: 740px) {
+    .edit-profile-form {
+        margin-top: 4rem;
+    }
+  }
+

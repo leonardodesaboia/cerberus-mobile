@@ -53,7 +53,7 @@
 .custom-card ion-card-title {
   font-size: 1.4em;
   font-weight: 600;
-  color: var(--ion-color-dark);
+  color: black;
 }
 
 .custom-card ion-card-subtitle {

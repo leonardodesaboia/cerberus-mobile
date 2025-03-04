@@ -2,7 +2,7 @@ import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons, IonBu
 import { useState, useEffect, ChangeEvent } from 'react';
 import Input from '../components/Input';
 import Toolbar from '../components/Toolbar';
-import '../styles/Profile.css';
+import '../styles/EditProfile.css';
 import { getUserData, editUserData } from '../services/api';
 
 const EditProfile: React.FC = () => {
@@ -81,25 +81,25 @@ const EditProfile: React.FC = () => {
       };
 
       const windowChange = () => {      
-        window.location.href = '/profile';
+        window.location.href = '/edit-profile';
       };
 
     return (
         <IonPage>
             <header className="header">
-                <div className="toolbar-profile">
+                <div className="toolbar-edit-profile">
                     <div className="back-button" onClick={windowChange}>
                     <span className="back-icon" style={{ fontSize: '24px', color: 'white' }}>&#8592;</span>
                     </div>
-                    <h1 className="profile-title">Editar cadastro</h1>
+                    <h1 className="edit-profile-title">Editar cadastro</h1>
                 </div>
             </header>
 
-            <IonContent className="profile-content">
+            <IonContent className="edit-profile-content">
 
                 
                 {/* editar usuario e email, sair e deletar conta */}
-                <div className="profile-form">
+                <div className="edit-profile-form">
                     <div className="info-section">
                         <IonLabel className="section-label">Usuário</IonLabel>
                         <Input type="text" placeholder="Usuário" value={userName} onChange={(e) => setUserName(e.target.value)} className='input-field' />

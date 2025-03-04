@@ -20,6 +20,26 @@ ion-content {
   font-family: 'Lato', sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  /* Sobrescrever as cores do modo escuro para usar as mesmas do modo claro */
+  body {
+    --ion-color-primary: var(--ion-primary-color);
+    --ion-color-secondary: var(--ion-secondary-color);
+    /* Repita para todas as cores que você usa */
+    
+    --ion-background-color: #ffffff;
+    --ion-background-color-rgb: 255, 255, 255;
+    --ion-text-color: #000000;
+    --ion-text-color-rgb: 0, 0, 0;
+    
+    /* Neutralizar outras variáveis do modo escuro */
+    --ion-item-background: #ffffff;
+    --ion-card-background: #ffffff;
+    /* ... etc ... */
+  }
+}
+
+
 h1,h2,h3,h4,h5,h6,input,p{
   color: black
 }
@@ -168,4 +188,24 @@ ion-card {
   height: 12rem;
   width: 9rem !important;
   margin-top: 1rem ;
+}
+
+/* Toolbar.css */
+ion-tab-bar {
+  --border: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-top: none !important;
+}
+
+.borderless-toolbar {
+  --border: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Para garantir que não haja borda em diferentes modos */
+ion-tab-bar::after,
+ion-tab-bar::before {
+  display: none !important;
 }
