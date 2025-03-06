@@ -8,6 +8,10 @@
   --ion-success-color:#118B01;
 }
 
+.sc-ion-alert-ios-h {
+  --background: #ffffff;
+}
+
 /* Estilo global para páginas */
 ion-content {
   --background: #f2f2f2;
@@ -35,7 +39,6 @@ ion-content {
     /* Neutralizar outras variáveis do modo escuro */
     --ion-item-background: #ffffff;
     --ion-card-background: #ffffff;
-    /* ... etc ... */
   }
 }
 

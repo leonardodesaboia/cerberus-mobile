@@ -187,20 +187,7 @@
 
 @media (max-width: 768px) {
   .show-password-button {
-    position: absolute;
-    right: 10px;
-    top: 52px; 
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #757575;
-    z-index: 10;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 24px;
-    width: 24px;
+    top: 47px; 
   }
 
   .register-image-container {
@@ -216,5 +203,15 @@
     padding: 20px;
     height: auto;
     max-height: none;
+  }
+}
+
+@media (min-width: 769px) and ( max-width: 1024px) {
+  .register-image-container {
+    display: none;
+  } 
+
+  .show-password-button {
+    top: 47px; 
   }
 }
