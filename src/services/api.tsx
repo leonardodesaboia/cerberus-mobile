@@ -1,5 +1,5 @@
 // api.ts
-export const API_URL = 'http://localhost:3000';
+export const API_URL = 'http://172.18.9.78:3000';
 
 // Interfaces para tipagem
 interface UserRegistrationData {
