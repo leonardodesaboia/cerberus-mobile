@@ -24,6 +24,7 @@ const EditProfile: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [toastMessage, setToastMessage] = useState<string>('');
     const [isSuccess, setIsSuccess] = useState<boolean>(true);
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
     
     // Adicionar estados para os erros e campos tocados
     const [errors, setErrors] = useState<FormErrors>({
@@ -53,7 +54,7 @@ const EditProfile: React.FC = () => {
             
             const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
             if (!localPartRegex.test(localPart)) {
-                return 'Email deve começar e terminar com letra ou número';
+                return 'Email deve possuir apenas letras ou números no nome e domínio';
             }
             
             if (!domain) return 'O domínio do email está ausente';
@@ -314,35 +315,44 @@ const EditProfile: React.FC = () => {
                         />
                     </div>
                     
-                    {/* botões salvar, sair e deletar */}
                     <div className="save">
                         <IonButton fill="clear" className="save-button" onClick={handleSaveChanges}>Salvar</IonButton>
                     </div>
 
                     <div className="delete-account">
-                        <IonButton fill='clear' className="delete-button" id="present-alert" color="danger">Deletar conta</IonButton>
+                        <IonButton 
+                            fill='clear' 
+                            className="delete-button" 
+                            color="danger"
+                            onClick={() => setShowDeleteAlert(true)}
+                        >
+                            Deletar conta
+                        </IonButton>
+                        
                         <IonAlert
+                            isOpen={showDeleteAlert}
+                            onDidDismiss={() => setShowDeleteAlert(false)}
                             header="Tem certeza que deseja excluir sua conta?"
-                            trigger="present-alert"
                             subHeader='Essa ação não pode ser desfeita'
                             buttons={[
-                            {
-                                text: 'Cancelar',
-                                role: 'cancel',
-                                handler: () => {
-                                console.log('Alert canceled');
+                                {
+                                    text: 'Cancelar',
+                                    role: 'cancel',
+                                    handler: () => {
+                                        console.log('Alert canceled');
+                                        setShowDeleteAlert(false);
+                                    },
                                 },
-                            },
-                            {
-                                text: 'Excluir permanente',
-                                role: 'confirm',
-                                handler: () => {
-                                deleteUser();
+                                {
+                                    text: 'Excluir permanente',
+                                    role: 'confirm',
+                                    handler: () => {
+                                        deleteUser();
+                                        setShowDeleteAlert(false);
+                                    },
                                 },
-                            },
                             ]}
-                            onDidDismiss={({ detail }) => console.log(`Dismissed with role: ${detail.role}`)}
-                        ></IonAlert>
+                        />
                     </div>
                 </div>
 

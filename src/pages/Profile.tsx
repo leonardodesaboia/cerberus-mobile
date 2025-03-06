@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
 
                     {/* bor=toes salvar,sair e deletar */}
                     <div className="save">
-                        <IonButton fill="clear" className="save-button" onClick={changeWindow}><IonIcon icon="create-outline" />Editar informações</IonButton>
+                        <IonButton fill="clear" className="save-button" routerLink='edit-profile'><IonIcon icon="create-outline" />Editar informações</IonButton>
                         
                     </div>
                     <div className="logout">

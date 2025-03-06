@@ -68,7 +68,9 @@ const Register: React.FC = () => {
     const [successMessage, setSuccessMessage] = useState<string>('');
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
     const [navigationError, setNavigationError] = useState<string>('');
-    const [isShow, setIsShow] = useState<boolean>(false);
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+    const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
+
 
     const validators: Validators = {
         email: (value: string): string => {
@@ -86,7 +88,7 @@ const Register: React.FC = () => {
         
             const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
             if (!localPartRegex.test(localPart)) {
-                return 'Email deve começar e terminar com letra ou número';
+                return 'Email deve possuir apenas letras, números, pontos ou underline no nome e domínio';
             }
         
             if (!domain) return 'O domínio do email está ausente';
@@ -340,7 +342,11 @@ const Register: React.FC = () => {
     };
 
     const handlePassword = () => {
-        setIsShow(!isShow);
+        setIsShowPassword(!isShowPassword);
+    };
+
+    const handleConfirmPassword = () => {
+        setIsShowConfirm(!isShowConfirm);
     };
 
     useEffect(() => {
@@ -419,7 +425,7 @@ const Register: React.FC = () => {
                         <div className="password-container">
                             <Input 
                                 label="Senha" 
-                                type={isShow ? "text" : "password"} 
+                                type={isShowPassword ? "text" : "password"} 
                                 value={formData.password}
                                 onChange={handleChange('password')}
                                 onBlur={handleBlur('password')}
@@ -428,14 +434,14 @@ const Register: React.FC = () => {
                                 disabled={isLoading}
                             />
                             <button type="button" className="show-password-button" onClick={handlePassword}>
-                                {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
+                                {isShowPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
                             </button>
                         </div>
 
                         <div className="password-container">
                             <Input 
                                 label="Confirmar senha" 
-                                type={isShow ? "text" : "password"} 
+                                type={isShowConfirm ? "text" : "password"} 
                                 value={formData.confirmPassword}
                                 onChange={handleChange('confirmPassword')}
                                 onBlur={handleBlur('confirmPassword')}
@@ -443,8 +449,8 @@ const Register: React.FC = () => {
                                 placeholder="Confirme sua senha"
                                 disabled={isLoading}
                             />
-                            <button type="button" className="show-password-button" onClick={handlePassword}>
-                                {isShow ? <EyeOff size={20}/> : <Eye size={20}/>}
+                            <button type="button" className="show-password-button" onClick={handleConfirmPassword}>
+                                {isShowConfirm ? <EyeOff size={20}/> : <Eye size={20}/>}
                             </button>
                         </div>
                         
