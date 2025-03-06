@@ -1,100 +1,115 @@
-.section-title {
-    margin-top: 0;
-    font-weight: 600;
-    margin-left: 0.5rem;
-}
+  /* Estilos do card principal */
+  .stats-card {
+    margin: 20px auto;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    background-color: white !important;
+    overflow: visible;
+    max-width: 560px;
+  }
+  
+  /* Container do gráfico */
+  .chart-container {
+    padding: 0.5rem 1rem 1.5rem 1rem;
 
-.chart-container {
-    margin-top: 1.5rem;
-    background: white;
+    width: 100%;
+    background-color: #fbfbfb;
+  }
+  
+  /* Título do gráfico */
+  .chart-header {
+    text-align: center;
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+  
+  .chart-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: black;
+    margin: 0;
+  }
+  
+  /* Legenda */
+  .legend-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    margin: 0.25rem 0;
+  }
+  
+  .legend-color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
+  
+  /* Total de descartados */
+  .total-descartados {
+    font-weight: bold;
+    text-align: left;
+    margin-top: 0.5rem;
+    width: 100%;
+    font-size: 0.85rem;
+  }
+  
+  /* Estado vazio */
+  .empty-chart-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    text-align: center;
     padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .empty-chart-message p {
+    margin: 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .empty-chart-message p:first-child {
+    font-size: 1rem;
+    color: var(--ion-primary-color);
+    font-weight: 600;
+  }
+  
+  /* Estado de carregamento */
+  .loading-message {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;  /* Allow items to wrap on smaller screens */
-}
+    min-height: 200px;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
 
-.legend-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    font-size: 16px;
-    min-width: 200px;  /* Ensure legend has enough width */
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.legend-color {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;  /* Prevent the color circle from shrinking */
-}
-
-.legend-item.total {
-    font-weight: bold;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
-}
-
-/* Media Queries for Responsiveness */
-@media screen and (max-width: 768px) {
-    .waste-stats-section {
-        margin: 2rem 0.5rem;
-        padding: 1rem;
-    }
-
-    .chart-container {
-        flex-direction: column;
-        padding: 0.5rem;
-        gap: 15px;
-    }
-
-    /* Make the chart container take full width on mobile */
-    .chart-container > div:first-child {
-        width: 100% !important;
-        height: 250px !important;
-    }
-
-    .legend-container {
-        width: 100%;
-        padding: 1rem;
-        font-size: 14px;
-        gap: 8px;
-    }
-}
-
-
-/* Fix for Safari flexbox gap support */
-@supports not (gap: 20px) {
-    .chart-container > * {
-        margin: 10px;
+  
+  @media (max-width: 766px) {
+    .stats-card {
+      margin: 20px auto;
     }
     
-    .legend-container > * {
-        margin-bottom: 10px;
+    .chart-header h3 {
+      font-size: 1rem;
     }
-}
+  }
 
-/* Print styles for better readability when printed */
-@media print {
-    .waste-stats-section {
-        margin: 1cm;
-        padding: 1cm;
-        box-shadow: none;
+  @media (max-width: 600px) {
+    .stats-card {
+      margin: 20px 1.3rem 0 1.3rem;
     }
-
-    .chart-container {
-        box-shadow: none;
-        break-inside: avoid;
-    }
-}
+  }

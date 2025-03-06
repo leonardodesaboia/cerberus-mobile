@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { IonCard, IonCardContent } from '@ionic/react';
 import "../styles/Chart.css";
 import { getUserData } from '../services/api';
 import { useEffect, useState } from 'react';
@@ -19,28 +20,8 @@ interface UserData {
 }
 
 const COLORS: ColorMap = { 
-    Plástico: "var(--ion-primary-color)", 
-    Metal: "var(--ion-secondary-color)" 
-};
-
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-        <text 
-            x={x} 
-            y={y} 
-            fill="white" 
-            textAnchor="middle" 
-            dominantBaseline="central"
-            style={{ fontSize: '12px', fontWeight: 'bold' }}
-        >
-            {`${(percent * 100).toFixed(1)}%`}
-        </text>
-    );
+    Plástico: "#174204", 
+    Metal: "#86C26D" 
 };
 
 const TrashChart: React.FC = () => {
@@ -80,6 +61,32 @@ const TrashChart: React.FC = () => {
         fetchData();
     }, []);
 
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+        const RADIAN = Math.PI / 180;
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+        
+        // Em telas muito pequenas, não mostra o label
+        if (window.innerWidth < 340 || percent < 0.1) return null;
+        
+        return (
+            <text 
+                x={x} 
+                y={y} 
+                fill="white" 
+                textAnchor="middle" 
+                dominantBaseline="central"
+                style={{ 
+                    fontSize: window.innerWidth < 768 ? '10px' : '12px', 
+                    fontWeight: 'bold' 
+                }}
+            >
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+        );
+    };
+
     // Renderiza mensagem se não houver dados de descarte
     const renderEmptyState = () => (
         <div className="empty-chart-message">
@@ -91,7 +98,11 @@ const TrashChart: React.FC = () => {
     // Renderiza o gráfico se houver dados
     const renderChart = () => (
         <>
-            <ResponsiveContainer height={250}>
+            <div className="chart-header">
+                <h3>Resumo de Descartes</h3>
+            </div>
+            
+            <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
                     <Pie 
                         data={data} 
@@ -99,7 +110,8 @@ const TrashChart: React.FC = () => {
                         nameKey="name" 
                         cx="50%" 
                         cy="50%" 
-                        outerRadius={100}
+                        outerRadius={80}
+                        innerRadius={0}
                         labelLine={false}
                         label={renderCustomizedLabel}
                     >
@@ -110,7 +122,10 @@ const TrashChart: React.FC = () => {
                             />
                         ))}
                     </Pie>
-                    <Tooltip formatter={(value) => [`${value} Descartados`, '']} />
+                    <Tooltip 
+                        formatter={(value) => [`${value} Descartados`, '']}
+                        contentStyle={{ background: 'white', border: '1px solid #ddd', borderRadius: '4px' }}
+                    />
                 </PieChart>
             </ResponsiveContainer>
 
@@ -130,26 +145,30 @@ const TrashChart: React.FC = () => {
                         </div>
                     );
                 })}
-                <div className="legend-item total">
-                    <strong>Total:</strong> {total} Descartados
-                </div>
+            </div>
+            
+            <div className="total-descartados">
+                Total: {total} Descartados
             </div>
         </>
     );
 
     return (
-        <section className="waste-stats-section">
-            <h2 className="section-title">Suas estatísticas:</h2>
-            <div className="chart-container">
-                {loading ? (
-                    <div className="loading-message">Carregando dados...</div>
-                ) : total === 0 ? (
-                    renderEmptyState()
-                ) : (
-                    renderChart()
-                )}
-            </div>
-        </section>
+        <div className="stats-section">
+            <h2 className="achievements-title-home">Suas estatísticas</h2>
+            
+            <IonCard className="stats-card">
+                <IonCardContent className="chart-container">
+                    {loading ? (
+                        <div className="loading-message">Carregando dados...</div>
+                    ) : total === 0 ? (
+                        renderEmptyState()
+                    ) : (
+                        renderChart()
+                    )}
+                </IonCardContent>
+            </IonCard>
+        </div>
     );
 };
 

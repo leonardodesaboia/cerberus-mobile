@@ -31,12 +31,27 @@ const ForgotPassword: React.FC = () => {
     const [localPart, domain] = email.split('@');
     
     if (!localPart || localPart.length < 3) return 'Parte local do email deve ter pelo menos 3 caracteres';
+    if (localPart.length > 64) return 'Parte local do email é muito longa (máx. 64 caracteres)';
+    
     if (!domain) return 'Domínio do email não pode estar vazio';
+    if (domain.length > 255) return 'Domínio do email é muito longo';
     if (!domain.includes('.')) return 'Domínio deve conter pelo menos um ponto';
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return 'Formato de email inválido';
+    // Verificar parte local
+    const localPartRegex = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$/;
+    if (!localPartRegex.test(localPart)) {
+        return 'Email deve começar e terminar com letra ou número';
+    }
+    
+    // Verificar formato do domínio
+    const domainRegex = /^[a-zA-Z0-9][-a-zA-Z0-9.]*[a-zA-Z0-9](\.[a-zA-Z]{2,})+$/;
+    if (!domainRegex.test(domain)) {
+        return 'Formato de domínio inválido';
+    }
+    
+    // Verificar caracteres especiais em sequência
+    if (email.includes('..') || email.includes('--') || email.includes('__')) {
+        return 'Email não pode conter sequências de caracteres especiais';
     }
     
     return '';
@@ -55,16 +70,15 @@ const ForgotPassword: React.FC = () => {
     setIsLoading(true);
     setApiError('');
     setSuccessMessage('');
-    setToastMessage(`Email enviado com sucesso!`);
-    setShowToast(true);
     
     try {
       const response = await requestPasswordReset(email);
       setSuccessMessage(response.message);
-      // Limpar o campo de email após o sucesso
       setEmail('');
+      setShowToast(true);
+      setToastMessage(`Email enviado com sucesso!`);
     } catch (err: any) {
-      setApiError(err.message || 'Ocorreu um erro ao processar sua solicitação.');
+      setApiError('Verifique se o email está digitado corretamente.');
     } finally {
       setIsLoading(false);
     }

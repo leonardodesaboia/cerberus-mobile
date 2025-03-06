@@ -12,9 +12,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^7.0.1",
     "@capacitor/app": "7.0.0",
-    "@capacitor/core": "7.0.1",
+    "@capacitor/core": "^7.0.1",
     "@capacitor/haptics": "7.0.0",
+    "@capacitor/ios": "^7.0.1",
     "@capacitor/keyboard": "7.0.0",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/react": "^8.4.3",
@@ -31,7 +33,7 @@
     "swiper": "^11.2.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "7.0.1",
+    "@capacitor/cli": "^7.0.1",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",

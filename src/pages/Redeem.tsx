@@ -407,20 +407,20 @@ const Redeem: React.FC = () => {
           )}
         </div>
 
-        {/* Log details alert */}
         <IonAlert
           isOpen={showDetailsAlert}
           onDidDismiss={() => setShowDetailsAlert(false)}
-          header="Detalhes do Resgate"
+          header="Detalhes da compra"
           message={
             selectedLog
               ? `${selectedLog.product ? selectedLog.product.name : 'Produto'}\n\n` +
-                `Pontos: ${Math.abs(selectedLog.points)}\n` +
-                `Data: ${formatDate(selectedLog.activityDate)}\n` +
-                `${selectedLog.code ? `Código: ${selectedLog.code}\n` : ''}` +
+                `Pontos: ${Math.abs(selectedLog.points)}\n\n` +
+                `Data: ${formatDate(selectedLog.activityDate)}\n\n` +
+                `${selectedLog.code ? `Código: ${selectedLog.code}\n\n` : ''}` +
                 `Status: ${selectedLog.redeemed ? 'Concluído ✓' : 'Em processamento ⌛'}`
               : ''
           }
+          cssClass="product-details-alert" // Adicionando uma classe personalizada
           buttons={[
             {
               text: 'Fechar',
@@ -441,7 +441,7 @@ const Redeem: React.FC = () => {
           isOpen={showConfirmAlert}
           onDidDismiss={() => setShowConfirmAlert(false)}
           header="Confirmar Conclusão"
-          message={`Deseja marcar este resgate como concluído?\n\n${selectedLog?.product?.name || 'Produto'}`}
+          message={`Deseja marcar esta compra como concluído?\n\n${selectedLog?.product?.name || 'Produto'}`}
           buttons={[
             {
               text: 'Cancelar',

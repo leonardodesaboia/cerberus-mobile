@@ -137,3 +137,14 @@
   margin-bottom: 16px;
 }
 
+.product-details-alert {
+  --min-width: 300px;
+  --max-width: 90%;
+}
+
+.product-details-alert .alert-message {
+  white-space: pre-line; 
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.2;
+}
