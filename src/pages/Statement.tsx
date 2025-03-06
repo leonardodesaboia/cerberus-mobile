@@ -412,13 +412,6 @@ const Statement: React.FC = () => {
                           {formatDate(log.activityDate)}
                         </div>
                         
-                        {log.code && (
-                          <div className="transaction-code">
-                            <IonIcon icon={receiptOutline} />
-                            <span>Código: {log.code}</span>
-                          </div>
-                        )}
-                        
                         {isProductRedemption(log) && (
                           <IonChip
                             className={`status-chip ${getRedemptionStatus(log) ? 'redeemed' : 'pending'}`}
