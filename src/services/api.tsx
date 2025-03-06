@@ -1,5 +1,13 @@
-// api.ts
-export const API_URL = 'http://172.18.9.78:3000';
+import { Capacitor } from '@capacitor/core';
+
+const getApiUrl = () => {
+  if (Capacitor.getPlatform() === 'android') {
+    return 'http://172.18.9.78:3000'; // Seu IP local
+  }
+  return 'http://localhost:3000';
+};
+
+export const API_URL = getApiUrl();
 
 // Interfaces para tipagem
 interface UserRegistrationData {
@@ -71,20 +79,33 @@ export const registerUser = async (userData: UserRegistrationData): Promise<User
 
 export const loginUser = async (userData: LoginData): Promise<{ token: string }> => {
   try {
+    console.log('Login URL:', `${API_URL}/user/login`);
+    console.log('Dados de login:', JSON.stringify(userData));
+
     const response = await fetch(`${API_URL}/user/login`, {
       method: 'POST',
       headers: {
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData)
     });
-    const data = await response.json();
+
+    console.log('Status da resposta:', response.status);
+    
     if (!response.ok) {
-      throw new Error(data.message || 'Erro ao fazer login');
+      const errorText = await response.text();
+      console.error('Erro na resposta:', errorText);
+      throw new Error(errorText || 'Erro ao fazer login');
     }
+
+    const data = await response.json();
+    console.log('Dados recebidos:', data);
+
     return data;
   } catch (error: any) {
-    throw new Error(error.message || 'Erro ao fazer login');
+    console.error('Erro completo de login:', error);
+    throw new Error(error.message || 'Erro ao conectar com o servidor');
   }
 };
 
