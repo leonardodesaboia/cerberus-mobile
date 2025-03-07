@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'cerberus-mobile',
   webDir: './dist',
   server: {
+    androidScheme: 'https',
     allowNavigation: [
       'http://localhost:3000',
       'http://10.0.2.2:3000',
@@ -15,6 +16,11 @@ const config: CapacitorConfig = {
     CapacitorHttp: {
       enabled: true
     }
+  },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
   }
 };
 
