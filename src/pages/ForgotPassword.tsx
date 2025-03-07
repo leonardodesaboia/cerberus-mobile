@@ -93,7 +93,6 @@ const ForgotPassword: React.FC = () => {
         className="forgot-password-card"
       >
         <div className="forgot-password-image-container">
-          {/* Imagem ilustrativa pode ser adicionada aqui */}
         </div>
         
         <div className="forgot-password-form-section">
@@ -103,7 +102,7 @@ const ForgotPassword: React.FC = () => {
               <span>Voltar</span>
             </Link>
             <h1 className="forgot-password-title">
-              <img src="../public/recycle.png" alt="" className="logo"/> EcoPoints
+              <img src="/recycle.png" alt="" className="logo"/> EcoPoints
             </h1>
             <p className="forgot-password-subtitle">Esqueceu sua senha?</p>
             <p className="forgot-password-description">

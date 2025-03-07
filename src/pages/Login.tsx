@@ -138,7 +138,7 @@ function Login(): JSX.Element {
                 <div className="login-form-section">
                     <div className="login-header">
                         <h1 className="login-title">
-                            <img src="../public/recycle.png" alt="" className="logo-acc"/> EcoPoints
+                            <img src="/recycle.png" alt="" className="logo-acc"/> EcoPoints
                         </h1>
                         <p className="login-subtitle">Faça login para acessar sua conta</p>
                     </div>

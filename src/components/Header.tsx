@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getUserData } from "../services/api";
 import PointsUpdateEvent from "../utils/pointsUpdateEvent";
 import { chevronForward } from 'ionicons/icons';
+import '../styles/Header.css'; // Import the CSS file
 
 const Header: React.FC = () => {
     console.log("Header component rendering");
@@ -13,12 +14,8 @@ const Header: React.FC = () => {
 
     const fetchUserData = async () => {
         try {
-            // First check if we can access localStorage (common issue on Android)
             const token = localStorage.getItem("token");
             const userId = localStorage.getItem("userId");
-            
-            console.log("Token exists:", !!token);
-            console.log("UserId exists:", !!userId);
             
             if (!token || !userId) {
                 console.warn("Missing token or userId in localStorage");
@@ -37,7 +34,6 @@ const Header: React.FC = () => {
         } catch (err) {
             console.error("Error fetching user data:", err);
             setError("Erro ao carregar dados");
-            // Set default values instead of showing error
             setUsername("Usuário");
             setCurrentPoints(0);
         } finally {
@@ -57,44 +53,37 @@ const Header: React.FC = () => {
         };
     }, []);
 
-    const changeWindow = () => {
-        window.location.href = '/statement';
-    };
+    const windowChange = () => {
+        window.location.href = "/statement";
+    }
 
-    // This ensures the header appears even during loading or errors
     return (
-        <IonHeader className="ion-no-border" style={{ position: 'relative', zIndex: 1000 }}>
-            <IonToolbar mode="md">
-                <IonGrid>
-                    <IonRow>
-                        <IonCol size="12">
-                            <IonTitle size="large">
-                                Bem vindo(a) {loading ? "..." : username}
-                            </IonTitle>
-                        </IonCol>
-                    </IonRow>
+        <IonHeader className="ion-no-border app-header">
+            <IonToolbar mode="md" className="app-header">
+                <div className="header-content">
+                    <IonTitle size="large" className="welcome-title">
+                        Bem vindo(a) {loading ? <span className="loading-dots">...</span> : username}
+                    </IonTitle>
                     
-                    <IonRow className="ion-align-items-center ion-justify-content-center">
-                        <IonCol size="12" className="ion-text-center">
-                            <IonLabel>
-                                Seu saldo de pontos
-                            </IonLabel>
-                        </IonCol>
-                    </IonRow>
-                    
-                    <IonRow className="ion-align-items-center ion-justify-content-center">
-                        <IonCol size="auto" className="ion-text-center">
-                            <IonButton fill="clear" onClick={changeWindow}>
-                                <IonText color="primary">
-                                    <h3 style={{ margin: 0, fontWeight: 'bold' }}>
-                                        {loading ? "..." : currentPoints}
-                                    </h3>
-                                </IonText>
-                                <IonIcon slot="end" icon={chevronForward} />
-                            </IonButton>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
+                    <div className="points-container">
+                        <IonLabel className="points-label">
+                            Seu saldo de pontos
+                        </IonLabel>
+                        
+                        <IonButton 
+                            fill="clear" 
+                            onClick={windowChange}
+                            className="points-button"
+                        >
+                            <IonText>
+                                <h3 className="points-value">
+                                    {loading ? <span className="loading-dots">...</span> : currentPoints}
+                                    <IonIcon icon={chevronForward} className="points-icon" />
+                                </h3>
+                            </IonText>
+                        </IonButton>
+                    </div>
+                </div>
             </IonToolbar>
         </IonHeader>
     );

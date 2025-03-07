@@ -373,7 +373,7 @@ const Register: React.FC = () => {
                 <div className="register-form-section">
                     <div className="register-header">
                         <h1 className="register-title">
-                            <img src="../public/recycle.png" alt="" className="logo"/> EcoPoints
+                            <img src="/recycle.png" alt="" className="logo"/> EcoPoints
                         </h1>
                         <p className="register-subtitle">Crie sua conta e comece a contribuir</p>
                     </div>

@@ -164,7 +164,7 @@ const Statement: React.FC = () => {
         throw new Error('Credenciais não encontradas. Por favor, faça login novamente.');
       }
       
-      const response = await fetch(`http://localhost:3000/log/${userId}`, {
+      const response = await fetch(`http://172.18.9.78:3000/log/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

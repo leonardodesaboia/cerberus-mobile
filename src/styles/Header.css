@@ -1,0 +1,115 @@
+:root {
+    --primary-color: #174204;
+    --secondary-color: #86C26D;
+    --tertiary-color: #326D19;
+    --danger-color: #9A1200;
+    --success-color: #118B01;
+    --light-color: #F1F1F1;
+    --background-color: #f2f2f2;
+  }
+  
+  /* Estilos gerais do header */
+  .app-header {
+    background-color: var(--primary-color);
+    --background: var(--primary-color);
+    --border-width: 0 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Conteúdo do header */
+  .header-content {
+    margin-top: 24px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 0.5rem;
+  }
+  
+  /* Título de boas-vindas */
+  .welcome-title {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding: 0;
+    text-align: left;
+    margin: 0;
+    text-transform: capitalize;
+  }
+  
+  /* Label para os pontos */
+  .points-label {
+    color: #a5d690;
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin: 0;
+  }
+  
+  /* Container de pontos */
+  .points-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  /* Botão de pontos */
+  .points-button {
+    --padding-start: 0;
+    --padding-end: 0;
+    height: auto;
+    margin: 0;
+  }
+  
+  /* Valor dos pontos */
+  .points-value {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Ícone ao lado dos pontos */
+  .points-icon {
+    margin-left: 8px;
+    color: white;
+    font-size: 1.2rem;
+  }
+  
+  /* Animação para os pontos carregando */
+  .loading-dots {
+    display: inline-block;
+    width: 30px;
+    animation: loadingDots 1.5s infinite;
+  }
+  
+  @keyframes loadingDots {
+    0% { content: "."; }
+    33% { content: ".."; }
+    66% { content: "..."; }
+  }
+
+  
+  /* Responsividade para telas maiores */
+  @media (min-width: 768px) {
+    .header-content {
+      padding: 20px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .welcome-title {
+      font-size: 1.8rem;
+    }
+    
+    .points-value {
+      font-size: 2.2rem;
+    }
+    
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+  }
