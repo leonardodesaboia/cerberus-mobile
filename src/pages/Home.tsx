@@ -31,7 +31,6 @@ const Home: React.FC = () => {
 
   return (
     <IonPage>
-      <Header />
       <IonContent fullscreen>
         <IonText className="title-text-home">
           <h2 className='achievements-title-home'>Conquistas desbloqueadas</h2>
@@ -47,5 +46,5 @@ const Home: React.FC = () => {
     </IonPage>
   );
 };
-
+   
 export default Home;
