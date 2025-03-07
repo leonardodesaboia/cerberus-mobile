@@ -1,8 +1,8 @@
-import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText, IonIcon, IonButtons, IonButton, IonRow, IonCol, IonGrid } from "@ionic/react";
+import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText, IonIcon, IonButton, IonRow, IonCol, IonGrid } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { getUserData } from "../services/api";
 import PointsUpdateEvent from "../utils/pointsUpdateEvent";
-import { chevronForward } from 'ionicons/icons'; // Use correct icon name
+import { chevronForward } from 'ionicons/icons';
 
 const Header: React.FC = () => {
     console.log("Header component rendering");

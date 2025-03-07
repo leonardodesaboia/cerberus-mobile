@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonLabel, IonPage, IonText, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonPage, IonText } from '@ionic/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
@@ -9,10 +9,10 @@ import SwiperComponent from '../components/SwiperHome';
 import TrashChart from '../components/Chart';
 import { useEffect, useState } from 'react';
 import { getUserData } from '../services/api';
+import PointsUpdateEvent from '../utils/pointsUpdateEvent';
 
 const Home: React.FC = () => {
   const [userPoints, setUserPoints] = useState<number>(0);
-  const [shouldRefreshHeader, setShouldRefreshHeader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,10 +27,17 @@ const Home: React.FC = () => {
     };
 
     fetchUserData();
-  }, [shouldRefreshHeader]);
+  }, []);
+
+  // Function to refresh points
+  const refreshPoints = () => {
+    PointsUpdateEvent.emit();
+  };
 
   return (
     <IonPage>
+      <Header />
+      
       <IonContent fullscreen>
         <IonText className="title-text-home">
           <h2 className='achievements-title-home'>Conquistas desbloqueadas</h2>
