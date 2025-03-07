@@ -160,9 +160,8 @@ const Store: React.FC = () => {
 
     return (
         <IonPage>
+          <Header />
             <IonContent fullscreen>
-                <Header />
-
                 <div className="store-content">
                     <IonText className="title-text">
                         <h2 className="products-title">Troque seus pontos</h2>

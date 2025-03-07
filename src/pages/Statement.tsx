@@ -359,13 +359,8 @@ const Statement: React.FC = () => {
   
   return (
     <IonPage>
+      <Header />
       <IonContent fullscreen className="content-statement">
-        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
-        
-        <Header />
-        
         <div className="statement-content">
           <IonText className="title-text">
             <h2 className="statement-title">Extrato de Pontos</h2>

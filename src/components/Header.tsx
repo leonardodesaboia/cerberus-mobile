@@ -1,7 +1,8 @@
-import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText, IonIcon } from "@ionic/react";
+import { IonHeader, IonToolbar, IonTitle, IonLabel, IonText, IonIcon, IonContent } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { getUserData } from "../services/api";
 import PointsUpdateEvent from "../utils/pointsUpdateEvent";
+import { chevronForwardOutline } from 'ionicons/icons'; // Import the specific icon
 
 const Header: React.FC = () => {
     const [username, setUsername] = useState<string>("");
@@ -16,6 +17,7 @@ const Header: React.FC = () => {
             setCurrentPoints(userData.points);
         } catch (err) {
             setError("Erro ao carregar dados do usuário");
+            console.error("Error fetching user data:", err);
         } finally {
             setLoading(false);
         }
@@ -24,10 +26,8 @@ const Header: React.FC = () => {
     useEffect(() => {
         fetchUserData();
         
-        // Registrar o listener para atualizações de pontos
         PointsUpdateEvent.subscribe(fetchUserData);
 
-        // Cleanup
         return () => {
             PointsUpdateEvent.unsubscribe(fetchUserData);
         };
@@ -58,16 +58,50 @@ const Header: React.FC = () => {
     }
 
     return (
-        <IonHeader className="store-header" collapse="condense" >
+        <IonHeader>
             <IonToolbar>
-                <IonTitle size="large" className="custom-title">
+                <IonTitle size="large" style={{ 
+                    fontSize: '18px', 
+                    fontWeight: 'bold',
+                    padding: '10px'
+                }}>
                     Bem vindo(a) {username}
                 </IonTitle>
-                <div className="points-display">
-                    <IonLabel className="custom-saldo">Seu saldo de pontos</IonLabel>
-                    <IonText>
-                        <h3 className="custom-points">{currentPoints} <IonIcon icon="chevron-forward-outline" style={{fontSize: "20px"}} onClick={changeWindow}/></h3>
-                    </IonText>
+                <div style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center',
+                    padding: '0 15px 10px 15px'
+                }}>
+                    <IonLabel style={{ 
+                        fontSize: '14px', 
+                        marginBottom: '5px' 
+                    }}>
+                        Seu saldo de pontos
+                    </IonLabel>
+                    <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center'
+                    }}>
+                        <IonText>
+                            <h3 style={{ 
+                                fontSize: '24px', 
+                                fontWeight: 'bold',
+                                margin: '0'
+                            }}>
+                                {currentPoints}
+                            </h3>
+                        </IonText>
+                        <IonIcon 
+                            icon={chevronForwardOutline} 
+                            style={{
+                                fontSize: '20px',
+                                marginLeft: '5px'
+                            }} 
+                            onClick={changeWindow}
+                        />
+                    </div>
                 </div>
             </IonToolbar>
         </IonHeader>

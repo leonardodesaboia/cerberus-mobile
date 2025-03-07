@@ -265,13 +265,8 @@ const Redeem: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen>
-        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-          <IonRefresherContent></IonRefresherContent>
-        </IonRefresher>
-        
-        <Header />
-        
+      <Header />
+      <IonContent fullscreen>        
         <div className="redeemed-content">
           <IonText className="title-text">
             <h2 className="redeemed-title">Meus produtos: </h2>
