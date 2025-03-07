@@ -1,0 +1,32 @@
+{
+    "appId": "com.cerberus.mobile",
+    "appName": "CerberusMobile",
+    "webDir": "dist",
+    "server": {
+      "url": "http://172.18.9.78:3000",
+      "allowNavigation": [
+        "172.18.9.78",
+        "localhost",
+        "127.0.0.1"
+      ]
+    },
+    "plugins": {
+      "SplashScreen": {
+        "launchShowDuration": 3000,
+        "launchAutoHide": true,
+        "backgroundColor": "#ffffffff",
+        "androidSplashResourceName": "splash",
+        "androidScaleType": "CENTER_CROP"
+      },
+      "App": {
+        "allowNavigation": [
+          "172.18.9.78",
+          "localhost",
+          "127.0.0.1"
+        ]
+      },
+      "Network": {
+        "cleartext": true
+      }
+    }
+  }

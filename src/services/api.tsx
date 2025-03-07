@@ -1,13 +1,5 @@
-import { Capacitor } from '@capacitor/core';
-
-const getApiUrl = () => {
-  if (Capacitor.getPlatform() === 'android') {
-    return 'http://172.18.9.78:3000'; // Seu IP local
-  }
-  return 'http://localhost:3000';
-};
-
-export const API_URL = getApiUrl();
+// api.ts
+export const API_URL = 'http://172.18.9.78:3000';
 
 // Interfaces para tipagem
 interface UserRegistrationData {
@@ -79,33 +71,40 @@ export const registerUser = async (userData: UserRegistrationData): Promise<User
 
 export const loginUser = async (userData: LoginData): Promise<{ token: string }> => {
   try {
-    console.log('Login URL:', `${API_URL}/user/login`);
-    console.log('Dados de login:', JSON.stringify(userData));
+    console.log('Login - URL:', `${API_URL}/user/login`);
+    console.log('Login - Dados:', userData);
 
     const response = await fetch(`${API_URL}/user/login`, {
       method: 'POST',
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData)
     });
 
-    console.log('Status da resposta:', response.status);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Erro na resposta:', errorText);
-      throw new Error(errorText || 'Erro ao fazer login');
+    console.log('Login - Status da Resposta:', response.status, response.statusText);
+
+    // Adicione log do texto da resposta antes de tentar fazer parse
+    const responseText = await response.text();
+    console.log('Login - Texto da Resposta:', responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('Erro ao parsear resposta:', parseError);
+      throw new Error('Erro ao processar resposta do servidor');
     }
 
-    const data = await response.json();
-    console.log('Dados recebidos:', data);
+    console.log('Login - Dados Recebidos:', data);
 
+    if (!response.ok) {
+      throw new Error(data.message || 'Erro ao fazer login');
+    }
     return data;
   } catch (error: any) {
-    console.error('Erro completo de login:', error);
-    throw new Error(error.message || 'Erro ao conectar com o servidor');
+    console.error('Erro detalhado no login:', error);
+    throw new Error(error.message || 'Erro ao fazer login');
   }
 };
 
